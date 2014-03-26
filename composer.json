@@ -1,0 +1,29 @@
+{
+    "name": "rezzza/alice-extension",
+    "type": "behat-extension",
+    "description": "Alice extension for Behat",
+    "keywords": ["symfony", "alice", "fixtures", "bdd"],
+    "license": "MIT",
+    "homepage": "https://github.com/rezzza/alice-extension",
+    "authors": [{
+        "name": "Community contributors",
+        "homepage": "https://github.com/rezzza/jobflow/contributors"
+    }],
+
+    "require": {
+        "php":                      ">=5.3.2",
+        "behat/behat":              "~2.5.0",
+        "behat/symfony2-extension": "1.1.*@dev",
+        "nelmio/alice":             "1.6.*@dev"
+    },
+
+    "autoload": {
+        "psr-0": { "Rezzza\\AliceExtension": "src/" }
+    },
+
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
+    }
+}

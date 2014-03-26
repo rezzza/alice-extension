@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="behat.alice.orm_initializer" class="Vlr\DeviceBundle\Behat\Extension\Alice\ORMInitializer">
+            <argument type="service" id="sf2.doctrine.orm.entity_manager" />
+            <argument>%sf2.database_name%</argument>
+            <argument type="collection">
+                <argument key="dir_name">%sf2.doctrine_migrations.dir_name%</argument>
+                <argument key="namespace">%sf2.doctrine_migrations.namespace%</argument>
+                <argument key="name">%sf2.doctrine_migrations.name%</argument>
+                <argument key="table_name">%sf2.doctrine_migrations.table_name%</argument>
+            </argument>
+        </service>
+
+        <service id="behat.alice.orm_initializer.event_subscriber" class="Vlr\DeviceBundle\Behat\Extension\Alice\EventListener\ORMInitializerSubscriber">
+            <argument type="service" id="behat.alice.orm_initializer" />
+            <tag name="behat.event_subscriber" />
+        </service>
+
+        <service id="behat.alice.loader" class="Vlr\DeviceBundle\Behat\Extension\Alice\AliceLoader">
+            <argument>%behat.alice.fixtures%</argument>
+            <argument type="service" id="sf2.doctrine.orm.entity_manager" />
+        </service>
+
+        <service id="behat.alice.initializer" class="Vlr\DeviceBundle\Behat\Extension\Alice\Context\Initializer\AliceLoaderInitializer">
+            <argument type="service" id="behat.alice.loader" />
+            <tag name="behat.context.initializer" />
+        </service>
+
+        <service id="sf2.doctrine.orm.entity_manager" class="Doctrine\Common\Persistence\ObjectManager" factory-service="behat.alice.container_proxy" factory-method="get">
+            <argument>doctrine.orm.default_entity_manager</argument>
+        </service>
+
+        <service id="behat.alice.container_proxy" class="Vlr\DeviceBundle\Behat\Extension\Alice\Symfony\ContainerProxy">
+            <argument type="service" id="behat.symfony2_extension.kernel" />
+        </service>
+    </services>
+</container>
