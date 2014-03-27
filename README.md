@@ -1,4 +1,61 @@
 Alice Extension for Behat
 =========================
 
-Make [Alice](https://github.com/nelmio/alice) work with [Behat](https://github.com/behat/behat)
+Make [Alice](https://github.com/nelmio/alice) work with [Behat](https://github.com/behat/behat).
+
+You can import fixtures through a yaml file and from a behat step.
+
+Installation
+------------
+
+Through Composer :
+
+        $ composer require --dev "rezzza/alice-extension:0.1.*@dev"
+
+Configure your behat.yml :
+```yml
+default:
+    extensions:
+        Rezzza\AliceExtension\Extension:
+            fixtures: /path/to/your/fixtures.yml
+```
+
+To write your `fixtures.yml` please report to [Alice documentation](https://github.com/nelmio/alice#creating-fixtures)
+
+Usage
+-----
+
+In your behat context you can activate `AliceContext`.
+
+```php
+<?php
+
+namespace Vendor\My\Features;
+
+use Behat\MinkExtension\Context\MinkContext;
+
+use Rezzza\AliceExtension\Context\AliceContext;
+
+class FeatureContext extends MinkContext
+{
+    public function __construct(array $parameters)
+    {
+        $this->useContext('alice', new AliceContext($parameters));
+    }
+}
+```
+
+So you can write in your features :
+```
+Feature: Test My feature
+
+    Background: Write fixtures
+        Given I load "Vendor\My\Entity" fixtures where column "key" is the key:
+            | key      | id | name |
+            | fixture1 | 1  | jean |
+            | fixture2 | 2  | marc |
+```
+
+If you use yaml file, you should consider put your default values in it thanks to [template inheritance](https://github.com/nelmio/alice#fixture-inheritance).
+
+And use inline fixtures to override values you need.
