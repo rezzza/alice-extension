@@ -21,9 +21,7 @@ class YamlFixtures implements AliceFixtures
         $data = $this->loadYaml($this->file);
 
         if (!array_key_exists($this->className, $data)) {
-            throw new \InvalidArgumentException(
-                sprintf('Cannot found class "%s" in file %s', $this->className, $this->file)
-            );
+            return array();
         }
 
         return $data[$this->className];
