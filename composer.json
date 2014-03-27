@@ -7,14 +7,20 @@
     "homepage": "https://github.com/rezzza/alice-extension",
     "authors": [{
         "name": "Community contributors",
-        "homepage": "https://github.com/rezzza/jobflow/contributors"
+        "homepage": "https://github.com/rezzza/alice-extension/contributors"
     }],
 
     "require": {
         "php":                      ">=5.3.2",
         "behat/behat":              "~2.5.0",
         "behat/symfony2-extension": "1.1.*@dev",
-        "nelmio/alice":             "1.6.*@dev"
+        "nelmio/alice":             "1.6.*@dev",
+        "doctrine/data-fixtures":   "2.0.*@dev"
+    },
+
+    "require-dev": {
+        "atoum/atoum": "dev-master",
+        "polishsymfonycommunity/symfony2-mocker-extension": "*"
     },
 
     "autoload": {

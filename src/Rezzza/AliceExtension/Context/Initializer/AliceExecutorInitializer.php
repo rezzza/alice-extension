@@ -6,15 +6,15 @@ use Behat\Behat\Context\ContextInterface;
 use Behat\Behat\Context\Initializer\InitializerInterface;
 
 use Rezzza\AliceExtension\Alice\AliceAwareInterface;
-use Rezzza\AliceExtension\Alice\AliceLoader;
+use Rezzza\AliceExtension\Alice\AliceFixturesExecutor;
 
-class AliceLoaderInitializer implements InitializerInterface
+class AliceExecutorInitializer implements InitializerInterface
 {
-    private $loader;
+    private $executor;
 
-    public function __construct(AliceLoader $loader)
+    public function __construct(AliceFixturesExecutor $executor)
     {
-        $this->loader = $loader;
+        $this->executor = $executor;
     }
 
     /**
@@ -36,6 +36,6 @@ class AliceLoaderInitializer implements InitializerInterface
      */
     public function initialize(ContextInterface $context)
     {
-        $context->setLoader($this->loader);
+        $context->setExecutor($this->executor);
     }
 }

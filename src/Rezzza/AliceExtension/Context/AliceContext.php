@@ -7,16 +7,16 @@ use Behat\Behat\Event\ScenarioEvent;
 use Behat\Gherkin\Node\TableNode;
 
 use Rezzza\AliceExtension\Alice\AliceAwareInterface;
-use Rezzza\AliceExtension\Alice\AliceLoader;
+use Rezzza\AliceExtension\Alice\AliceFixturesExecutor;
 use Rezzza\AliceExtension\Doctrine\ORMInitializer;
 
 class AliceContext extends BehatContext implements AliceAwareInterface
 {
-    private $loader;
+    private $executor;
 
-    public function setLoader(AliceLoader $loader)
+    public function setExecutor(AliceFixturesExecutor $executor)
     {
-        $this->loader = $loader;
+        $this->executor = $executor;
     }
 
     /**
@@ -24,7 +24,7 @@ class AliceContext extends BehatContext implements AliceAwareInterface
      */
     public function iLoadFixtures($className, $columnKey, TableNode $table)
     {
-        $this->loader->load(
+        $this->executor->import(
             $className,
             $columnKey,
             $table->getHash()
@@ -38,6 +38,6 @@ class AliceContext extends BehatContext implements AliceAwareInterface
      */
     public function purgeORM(ScenarioEvent $event)
     {
-        $this->loader->purge();
+        $this->executor->purge();
     }
 }

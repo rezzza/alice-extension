@@ -56,8 +56,7 @@ class Extension implements ExtensionInterface
     public function getCompilerPasses()
     {
         return array(
-            new Compiler\ResolveFixturesPathPass(),
-            new Compiler\ParameterMapperPass()
+            new Compiler\ResolveFixturesPathPass()
         );
     }
 }

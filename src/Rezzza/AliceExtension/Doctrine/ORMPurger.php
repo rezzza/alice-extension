@@ -22,6 +22,7 @@ namespace Rezzza\AliceExtension\Doctrine;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Internal\CommitOrderCalculator;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\DBAL\Platforms\MySqlPlatform;
 
 /**
  * Class responsible for purging databases of data before reloading data fixtures.
@@ -108,12 +109,13 @@ class ORMPurger
         }
 
         $commitOrder = $this->getCommitOrder($this->em, $classes);
+        $connection = $this->em->getConnection();
 
         // Drop association tables first
         $orderedTables = $this->getAssociationTables($commitOrder);
 
         // Get platform parameters
-        $platform = $this->em->getConnection()->getDatabasePlatform();
+        $platform = $connection->getDatabasePlatform();
 
         // Drop tables in reverse commit order
         for ($i = count($commitOrder) - 1; $i >= 0; --$i) {
@@ -130,11 +132,20 @@ class ORMPurger
             $orderedTables[] = $class->getQuotedTableName($platform);
         }
 
-        foreach($orderedTables as $tbl) {
+        foreach ($orderedTables as $tbl) {
             if ($this->purgeMode === self::PURGE_MODE_DELETE) {
                 $this->em->getConnection()->executeUpdate("DELETE IGNORE FROM " . $tbl);
             } else {
+                // implements hack for Mysql
+                if ($platform instanceof MySqlPlatform) {
+                    $connection->exec('SET foreign_key_checks = 0;');
+                }
+
                 $this->em->getConnection()->executeUpdate($platform->getTruncateTableSQL($tbl, true));
+
+                if ($platform instanceof MySqlPlatform) {
+                    $connection->exec('SET foreign_key_checks = 1;');
+                }
             }
         }
     }

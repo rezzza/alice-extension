@@ -4,5 +4,5 @@ namespace Rezzza\AliceExtension\Alice;
 
 interface AliceAwareInterface
 {
-    public function setLoader(AliceLoader $loader);
+    public function setExecutor(AliceFixturesExecutor $loader);
 }
