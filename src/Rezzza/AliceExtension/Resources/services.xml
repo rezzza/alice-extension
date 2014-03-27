@@ -10,6 +10,7 @@
     <services>
         <service id="behat.alice.executor" class="Rezzza\AliceExtension\Alice\AliceFixturesExecutor">
             <argument type="service" id="sf2.doctrine" />
+            <argument type="service" id="behat.alice.loader" />
             <argument>%behat.alice.fixtures%</argument>
         </service>
 
@@ -17,6 +18,8 @@
             <argument type="service" id="behat.alice.executor" />
             <tag name="behat.context.initializer" />
         </service>
+
+        <service id="behat.alice.loader" class="Nelmio\Alice\Loader\Base" />
 
         <service id="sf2.doctrine.orm.entity_manager" class="Doctrine\Common\Persistence\ObjectManager" factory-service="behat.alice.container_proxy" factory-method="get">
             <argument>doctrine.orm.default_entity_manager</argument>

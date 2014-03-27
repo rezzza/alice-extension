@@ -9,16 +9,19 @@ use Doctrine\Fixture\Filter\ChainFilter;
 use Doctrine\Fixture\Loader\ClassLoader;
 use Doctrine\Fixture\Persistence\ManagerRegistryEventSubscriber;
 
+use Nelmio\Alice\Loader\Base as AliceLoader;
+
 class AliceFixturesExecutor
 {
     protected $fixturesFile;
 
     protected $doctrine;
 
-    public function __construct(ManagerRegistry $doctrine, $fixturesFile = null)
+    public function __construct(ManagerRegistry $doctrine, AliceLoader $alice, $fixturesFile = null)
     {
-        $this->fixturesFile = $fixturesFile;
         $this->doctrine = $doctrine;
+        $this->alice = $alice;
+        $this->fixturesFile = $fixturesFile;
     }
 
     public function import($className, $columnKey, array $data)
@@ -40,7 +43,7 @@ class AliceFixturesExecutor
             new ManagerRegistryEventSubscriber($this->doctrine)
         );
         $eventManager->addEventSubscriber(
-            new Fixture\AliceFixturesEventSubscriber($fixtures)
+            new Fixture\AliceFixturesEventSubscriber($this->alice, $fixtures)
         );
 
         $this->execute($configuration, Executor::IMPORT);

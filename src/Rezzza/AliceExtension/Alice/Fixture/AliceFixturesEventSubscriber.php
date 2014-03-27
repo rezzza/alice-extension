@@ -5,6 +5,7 @@ namespace Rezzza\AliceExtension\Alice\Fixture;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Fixture\Event\FixtureEvent;
 use Doctrine\Fixture\Event\ImportFixtureEventListener;
+use Nelmio\Alice\Loader\Base as AliceLoader;
 
 use Rezzza\AliceExtension\Alice\AliceFixture;
 use Rezzza\AliceExtension\Alice\AliceFixtures;
@@ -13,8 +14,11 @@ class AliceFixturesEventSubscriber implements EventSubscriber, ImportFixtureEven
 {
     private $fixtures;
 
-    public function __construct(AliceFixtures $fixtures)
+    private $alice;
+
+    public function __construct(AliceLoader $alice, AliceFixtures $fixtures)
     {
+        $this->alice = $alice;
         $this->fixtures = $fixtures;
     }
 
@@ -40,6 +44,7 @@ class AliceFixturesEventSubscriber implements EventSubscriber, ImportFixtureEven
         }
 
         $fixture->setAliceFixtures($this->fixtures);
+        $fixture->setAlice($this->alice);
     }
 }
 

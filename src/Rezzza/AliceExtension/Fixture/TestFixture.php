@@ -4,6 +4,7 @@ namespace Rezzza\AliceExtension\Fixture;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Fixture\Persistence\ManagerRegistryFixture;
+use Nelmio\Alice\Loader\Base as AliceLoader;
 
 use Rezzza\AliceExtension\Alice\AliceFixture;
 use Rezzza\AliceExtension\Alice\AliceFixtures;
@@ -15,10 +16,11 @@ class TestFixture implements ManagerRegistryFixture, AliceFixture
 
     private $fixtures;
 
+    private $alice;
+
     public function import()
     {
-        $loader = new \Nelmio\Alice\Loader\Base;
-        $objects = $loader->load($this->fixtures->load());
+        $objects = $this->alice->load($this->fixtures->load());
         $persister = new \Nelmio\Alice\ORM\Doctrine($this->managerRegistry->getManager());
         $persister->persist($objects);
     }
@@ -38,5 +40,10 @@ class TestFixture implements ManagerRegistryFixture, AliceFixture
     public function setAliceFixtures(AliceFixtures $fixtures)
     {
         $this->fixtures = $fixtures;
+    }
+
+    public function setAlice(AliceLoader $alice)
+    {
+        $this->alice = $alice;
     }
 }
