@@ -15,7 +15,7 @@ class AliceFixturesExecutor
 
     protected $doctrine;
 
-    public function __construct($fixturesFile, ManagerRegistry $doctrine)
+    public function __construct(ManagerRegistry $doctrine, $fixturesFile = null)
     {
         $this->fixturesFile = $fixturesFile;
         $this->doctrine = $doctrine;
@@ -23,13 +23,15 @@ class AliceFixturesExecutor
 
     public function import($className, $columnKey, array $data)
     {
-        $fixtureRows = new MultipleFixtures(
-            $className,
-            array(
-                new YamlFixtures($className, $this->fixturesFile),
-                new InlineFixtures($columnKey, $data)
-            )
+        $fixtures = array(
+            new InlineFixtures($columnKey, $data)
         );
+
+        if (null !== $this->fixturesFile) {
+            array_unshift($fixtures, new YamlFixtures($className, $this->fixturesFile));
+        }
+
+        $fixtures = new MultipleFixtures($className, $fixtures);
 
         $configuration = new Configuration();
         $eventManager  = $configuration->getEventManager();
@@ -38,7 +40,7 @@ class AliceFixturesExecutor
             new ManagerRegistryEventSubscriber($this->doctrine)
         );
         $eventManager->addEventSubscriber(
-            new Fixture\AliceFixturesEventSubscriber($fixtureRows)
+            new Fixture\AliceFixturesEventSubscriber($fixtures)
         );
 
         $this->execute($configuration, Executor::IMPORT);
