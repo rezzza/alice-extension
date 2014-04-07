@@ -25,10 +25,6 @@ class Extension implements ExtensionInterface
         if (isset($config['fixtures'])) {
             $container->setParameter('behat.alice.fixtures', $config['fixtures']);
         }
-
-        if (isset($config['mapping_parameters'])) {
-            $container->setParameter('behat.alice.mapping_parameters', $config['mapping_parameters']);
-        }
     }
 
     /**
@@ -42,9 +38,6 @@ class Extension implements ExtensionInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('fixtures')
-                ->end()
-                ->arrayNode('mapping_parameters')
-                    ->prototype('scalar')->end()
                 ->end()
             ->end()
         ->end();
