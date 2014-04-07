@@ -18,6 +18,7 @@ default:
     extensions:
         Rezzza\AliceExtension\Extension:
             fixtures: /path/to/your/fixtures.yml
+            lifetime: (scenario|feature)
 ```
 
 To write your `fixtures.yml` please report to [Alice documentation](https://github.com/nelmio/alice#creating-fixtures)
@@ -59,3 +60,10 @@ Feature: Test My feature
 If you use yaml file, you should consider put your default values in it thanks to [template inheritance](https://github.com/nelmio/alice#fixture-inheritance).
 
 And use inline fixtures to override values you need.
+
+Lifetime
+--------
+2 lifetime options are available.
+
+* scenario : will reset fixtures after each scenario. You have to use **background** step to describe your fixtures
+* feature : will reset fixtures after each feature. You have to use **scenario** step to describe your fixtures

@@ -4,6 +4,7 @@ namespace Rezzza\AliceExtension\Context;
 
 use Behat\Behat\Context\BehatContext;
 use Behat\Behat\Event\ScenarioEvent;
+use Behat\Behat\Event\FeatureEvent;
 use Behat\Gherkin\Node\TableNode;
 
 use Rezzza\AliceExtension\Alice\AliceAwareInterface;
@@ -29,15 +30,5 @@ class AliceContext extends BehatContext implements AliceAwareInterface
             $columnKey,
             $table->getHash()
         );
-    }
-
-    /**
-     * Reload fixtures between each scenario
-     *
-     * @AfterScenario
-     */
-    public function purgeORM(ScenarioEvent $event)
-    {
-        $this->executor->purge();
     }
 }

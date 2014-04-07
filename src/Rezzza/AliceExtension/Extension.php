@@ -25,6 +25,10 @@ class Extension implements ExtensionInterface
         if (isset($config['fixtures'])) {
             $container->setParameter('behat.alice.fixtures', $config['fixtures']);
         }
+
+        if (isset($config['lifetime'])) {
+            $container->setParameter('behat.alice.lifetime', $config['lifetime']);
+        }
     }
 
     /**
@@ -38,6 +42,8 @@ class Extension implements ExtensionInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('fixtures')
+                ->end()
+                ->scalarNode('lifetime')
                 ->end()
             ->end()
         ->end();

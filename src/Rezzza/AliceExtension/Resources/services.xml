@@ -5,6 +5,7 @@
 
     <parameters>
         <parameter key="behat.alice.fixtures">null</parameter>
+        <parameter key="behat.alice.lifetime">feature</parameter>
     </parameters>
 
     <services>
@@ -20,6 +21,12 @@
         </service>
 
         <service id="behat.alice.loader" class="Nelmio\Alice\Loader\Base" />
+
+        <service id="behat.alice.hook_listener" class="Rezzza\AliceExtension\Context\EventSubscriber\HookListener">
+            <argument type="service" id="behat.alice.executor" />
+            <argument>%behat.alice.lifetime%</argument>
+            <tag name="behat.event_subscriber" priority="0" />
+        </service>
 
         <service id="sf2.doctrine.orm.entity_manager" class="Doctrine\Common\Persistence\ObjectManager" factory-service="behat.alice.container_proxy" factory-method="get">
             <argument>doctrine.orm.default_entity_manager</argument>
