@@ -109,13 +109,10 @@ class ORMPurger
         }
 
         $commitOrder = $this->getCommitOrder($this->em, $classes);
-        $connection = $this->em->getConnection();
+        $platform = $this->em->getConnection()->getDatabasePlatform();
 
         // Drop association tables first
         $orderedTables = $this->getAssociationTables($commitOrder);
-
-        // Get platform parameters
-        $platform = $connection->getDatabasePlatform();
 
         // Drop tables in reverse commit order
         for ($i = count($commitOrder) - 1; $i >= 0; --$i) {
@@ -132,21 +129,22 @@ class ORMPurger
             $orderedTables[] = $class->getQuotedTableName($platform);
         }
 
+        // implements hack for Mysql
+        if ($platform instanceof MySqlPlatform) {
+            $this->em->getConnection()->exec('SET foreign_key_checks = 0;');
+        }
+
         foreach ($orderedTables as $tbl) {
             if ($this->purgeMode === self::PURGE_MODE_DELETE) {
                 $this->em->getConnection()->executeUpdate("DELETE IGNORE FROM " . $tbl);
             } else {
-                // implements hack for Mysql
-                if ($platform instanceof MySqlPlatform) {
-                    $connection->exec('SET foreign_key_checks = 0;');
-                }
-
                 $this->em->getConnection()->executeUpdate($platform->getTruncateTableSQL($tbl, true));
-
-                if ($platform instanceof MySqlPlatform) {
-                    $connection->exec('SET foreign_key_checks = 1;');
-                }
             }
+        }
+
+        // implements hack for Mysql
+        if ($platform instanceof MySqlPlatform) {
+            $this->em->getConnection()->exec('SET foreign_key_checks = 1;');
         }
     }
 
