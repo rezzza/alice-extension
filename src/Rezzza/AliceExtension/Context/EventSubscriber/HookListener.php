@@ -23,8 +23,8 @@ class HookListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         $events = array(
-           'afterFeature',
-           'afterScenario'
+           'beforeFeature',
+           'beforeScenario'
         );
 
         return array_combine($events, $events);
@@ -35,7 +35,7 @@ class HookListener implements EventSubscriberInterface
      *
      * @param \Behat\Behat\Event\FeatureEvent $event
      */
-    public function afterFeature(FeatureEvent $event)
+    public function beforeFeature(FeatureEvent $event)
     {
         if ('feature' !== $this->lifetime) {
             return;
@@ -49,7 +49,7 @@ class HookListener implements EventSubscriberInterface
      *
      * @param \Behat\Behat\Event\ScenarioEvent $event
      */
-    public function afterScenario(ScenarioEvent $event)
+    public function beforeScenario(ScenarioEvent $event)
     {
         if ('scenario' !== $this->lifetime) {
             return;
