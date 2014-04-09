@@ -20,16 +20,24 @@ class TestFixture implements ManagerRegistryFixture, AliceFixture
 
     public function import()
     {
+        $em = $this->managerRegistry->getManager();
         $objects = $this->alice->load($this->fixtures->load());
-        $persister = new \Nelmio\Alice\ORM\Doctrine($this->managerRegistry->getManager());
+        $persister = new \Nelmio\Alice\ORM\Doctrine($em);
         $persister->persist($objects);
+
+        // Ensure to close the connection to avoid mysql timeout
+        $em->getConnection()->close();
     }
 
     public function purge()
     {
-        $purger = new ORMPurger($this->managerRegistry->getManager());
+        $em = $this->managerRegistry->getManager();
+        $purger = new ORMPurger($em);
         $purger->setPurgeMode(ORMPurger::PURGE_MODE_TRUNCATE);
         $purger->purge();
+
+        // Ensure to close the connection to avoid mysql timeout
+        $em->getConnection()->close();
     }
 
     public function setManagerRegistry(ManagerRegistry $registry)
