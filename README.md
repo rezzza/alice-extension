@@ -23,6 +23,8 @@ default:
 
 To write your `fixtures.yml` please report to [Alice documentation](https://github.com/nelmio/alice#creating-fixtures)
 
+This extension need `Symfony2Extension` to work. Have a look to [its documentation](http://extensions.behat.org/symfony2/index.html)
+
 Usage
 -----
 
