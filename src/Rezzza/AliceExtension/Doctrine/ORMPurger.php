@@ -43,7 +43,7 @@ class ORMPurger
      *
      * @var int
      */
-    private $purgeMode = self::PURGE_MODE_DELETE;
+    private $purgeMode = self::PURGE_MODE_TRUNCATE;
 
     /**
      * Construct new purger instance.
@@ -99,34 +99,14 @@ class ORMPurger
     /** @inheritDoc */
     public function purge()
     {
-        $classes = array();
         $metadatas = $this->em->getMetadataFactory()->getAllMetadata();
+        $platform  = $this->em->getConnection()->getDatabasePlatform();
 
+        $tables = array();
         foreach ($metadatas as $metadata) {
-            if ( ! $metadata->isMappedSuperclass) {
-                $classes[] = $metadata;
+            if (!$metadata->isMappedSuperclass) {
+                $tables[] = $metadata->getQuotedTableName($platform);
             }
-        }
-
-        $commitOrder = $this->getCommitOrder($this->em, $classes);
-        $platform = $this->em->getConnection()->getDatabasePlatform();
-
-        // Drop association tables first
-        $orderedTables = $this->getAssociationTables($commitOrder);
-
-        // Drop tables in reverse commit order
-        for ($i = count($commitOrder) - 1; $i >= 0; --$i) {
-            $class = $commitOrder[$i];
-
-            if (
-                ($class->isInheritanceTypeSingleTable() && $class->name != $class->rootEntityName) ||
-                (isset($class->isEmbeddedClass) && $class->isEmbeddedClass) ||
-                $class->isMappedSuperclass
-            ) {
-                continue;
-            }
-
-            $orderedTables[] = $class->getQuotedTableName($platform);
         }
 
         // implements hack for Mysql
@@ -134,7 +114,7 @@ class ORMPurger
             $this->em->getConnection()->exec('SET foreign_key_checks = 0;');
         }
 
-        foreach ($orderedTables as $tbl) {
+        foreach ($tables as $tbl) {
             if ($this->purgeMode === self::PURGE_MODE_DELETE) {
                 $this->em->getConnection()->executeUpdate("DELETE IGNORE FROM " . $tbl);
             } else {
@@ -146,66 +126,5 @@ class ORMPurger
         if ($platform instanceof MySqlPlatform) {
             $this->em->getConnection()->exec('SET foreign_key_checks = 1;');
         }
-    }
-
-    private function getCommitOrder(EntityManager $em, array $classes)
-    {
-        $calc = new CommitOrderCalculator;
-
-        foreach ($classes as $class) {
-            $calc->addClass($class);
-
-            // $class before its parents
-            foreach ($class->parentClasses as $parentClass) {
-                $parentClass = $em->getClassMetadata($parentClass);
-
-                if ( ! $calc->hasClass($parentClass->name)) {
-                    $calc->addClass($parentClass);
-                }
-
-                $calc->addDependency($class, $parentClass);
-            }
-
-            foreach ($class->associationMappings as $assoc) {
-                if ($assoc['isOwningSide']) {
-                    $targetClass = $em->getClassMetadata($assoc['targetEntity']);
-
-                    if ( ! $calc->hasClass($targetClass->name)) {
-                        $calc->addClass($targetClass);
-                    }
-
-                    // add dependency ($targetClass before $class)
-                    $calc->addDependency($targetClass, $class);
-
-                    // parents of $targetClass before $class, too
-                    foreach ($targetClass->parentClasses as $parentClass) {
-                        $parentClass = $em->getClassMetadata($parentClass);
-
-                        if ( ! $calc->hasClass($parentClass->name)) {
-                            $calc->addClass($parentClass);
-                        }
-
-                        $calc->addDependency($parentClass, $class);
-                    }
-                }
-            }
-        }
-
-        return $calc->getCommitOrder();
-    }
-
-    private function getAssociationTables(array $classes)
-    {
-        $associationTables = array();
-
-        foreach ($classes as $class) {
-            foreach ($class->associationMappings as $assoc) {
-                if ($assoc['isOwningSide'] && $assoc['type'] == ClassMetadata::MANY_TO_MANY) {
-                    $associationTables[] = $assoc['joinTable']['name'];
-                }
-            }
-        }
-
-        return $associationTables;
     }
 }
