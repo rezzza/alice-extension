@@ -6,12 +6,15 @@ use Symfony\Component\Yaml\Yaml as YamlParser;
 
 class InlineFixtures implements AliceFixtures
 {
+    private $className;
+
     private $keyName;
 
     private $data;
 
-    public function __construct($keyName, array $data)
+    public function __construct($className, $keyName, array $data)
     {
+        $this->className = $className;
         $this->keyName = $keyName;
         $this->data = $data;
     }
@@ -26,7 +29,7 @@ class InlineFixtures implements AliceFixtures
             $rows[$name] = $this->normalize($d);
         }
 
-        return $rows;
+        return array($this->className => $rows);
     }
 
     public function normalize($data)

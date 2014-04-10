@@ -27,15 +27,14 @@ class AliceFixturesExecutor
     public function import($className, $columnKey, array $data)
     {
         $fixtures = array(
-            new InlineFixtures($columnKey, $data)
+            new InlineFixtures($className, $columnKey, $data)
         );
 
         if (null !== $this->fixturesFile) {
-            array_unshift($fixtures, new YamlFixtures($className, $this->fixturesFile));
+            array_unshift($fixtures, new YamlFixtures($this->fixturesFile));
         }
 
-        $fixtures = new MultipleFixtures($className, $fixtures);
-
+        $fixtures = new MultipleFixtures($fixtures);
         $configuration = new Configuration();
         $eventManager  = $configuration->getEventManager();
 

@@ -6,11 +6,8 @@ class MultipleFixtures implements AliceFixtures
 {
     private $fixtureRows;
 
-    private $className;
-
-    public function __construct($className, array $fixtureRows)
+    public function __construct(array $fixtureRows)
     {
-        $this->className = $className;
         $this->fixtureRows = $fixtureRows;
     }
 
@@ -19,9 +16,9 @@ class MultipleFixtures implements AliceFixtures
         $results = array();
 
         foreach ($this->fixtureRows as $rows) {
-            $results = array_merge($results, $rows->load());
+            $results = array_merge_recursive($results, $rows->load());
         }
 
-        return array($this->className => $results);
+        return $results;
     }
 }

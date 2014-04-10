@@ -6,25 +6,16 @@ use Symfony\Component\Yaml\Yaml as YamlParser;
 
 class YamlFixtures implements AliceFixtures
 {
-    private $className;
-
     private $file;
 
-    public function __construct($className, $file)
+    public function __construct($file)
     {
-        $this->className = $className;
         $this->file = $file;
     }
 
     public function load()
     {
-        $data = $this->loadYaml($this->file);
-
-        if (!array_key_exists($this->className, $data)) {
-            return array();
-        }
-
-        return $data[$this->className];
+        return $this->loadYaml($this->file);
     }
 
     protected function loadYaml($file)
