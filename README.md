@@ -5,6 +5,7 @@ Make [Alice](https://github.com/nelmio/alice) work with [Behat](https://github.c
 
 You can import fixtures through a yaml file and from a behat step.
 
+
 Installation
 ------------
 
@@ -62,6 +63,8 @@ Feature: Test My feature
 If you use yaml file, you should consider put your default values in it thanks to [template inheritance](https://github.com/nelmio/alice#fixture-inheritance).
 
 And use inline fixtures to override values you need.
+
+**Warning** Waiting Alice implements the template inheritance in stable version, you should force composer to use the dev-master if you need this feature.
 
 Lifetime
 --------
