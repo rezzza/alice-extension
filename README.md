@@ -69,3 +69,11 @@ Lifetime
 
 * scenario : will reset fixtures after each scenario. You have to use **background** step to describe your fixtures
 * feature : will reset fixtures after each feature. You have to use **scenario** step to describe your fixtures
+
+FAQ
+---
+* *I want to use this with Doctrine ODM !*
+* You should do a PR
+
+* *I wanto to use this with PostgreSQL !*
+* You should do a PR
