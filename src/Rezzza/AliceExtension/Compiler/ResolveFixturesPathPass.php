@@ -13,6 +13,6 @@ class ResolveFixturesPathPass implements CompilerPassInterface
         $fixturesPath = $container->getParameter('behat.alice.fixtures');
         $appPath = $sfContainer->getParameter('kernel.root_dir');
 
-        $container->setParameter('behat.alice.fixtures', $appPath.'/..'.$fixturesPath);
+        $container->setParameter('behat.alice.fixtures', $appPath.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.$fixturesPath);
     }
 }
