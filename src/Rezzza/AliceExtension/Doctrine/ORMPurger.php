@@ -107,6 +107,12 @@ class ORMPurger
             if (!$metadata->isMappedSuperclass) {
                 $tables[] = $metadata->getQuotedTableName($platform);
             }
+
+            foreach ($metadata->associationMappings as $assoc) {
+                if ($assoc['isOwningSide'] && $assoc['type'] == ClassMetadata::MANY_TO_MANY) {
+                    $tables[] = $assoc['joinTable']['name'];
+                }
+            }
         }
 
         // implements hack for Mysql
