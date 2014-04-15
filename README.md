@@ -1,6 +1,8 @@
 Alice Extension for Behat
 =========================
 
+[![Build Status](https://travis-ci.org/rezzza/alice-extension.svg?branch=master)](https://travis-ci.org/rezzza/alice-extension)
+
 Make [Alice](https://github.com/nelmio/alice) work with [Behat](https://github.com/behat/behat).
 
 You can import fixtures through a yaml file and from a behat step.
