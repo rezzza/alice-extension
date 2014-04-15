@@ -39,6 +39,8 @@ class InlineFixtures implements AliceFixtures
         foreach ($data as $key => $value) {
             if ($this->isYamlArray($value)) {
                 $result[$key] = YamlParser::parse($value);
+            } elseif (null !== json_decode($value)) {
+                $result[$key] = json_decode($value, true);
             } else {
                 $result[$key] = $value;
             }
