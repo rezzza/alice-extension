@@ -37,10 +37,8 @@ class InlineFixtures implements AliceFixtures
         $result = array();
 
         foreach ($data as $key => $value) {
-            if ($this->isYamlArray($value)) {
+            if ($this->isYaml($value)) {
                 $result[$key] = YamlParser::parse($value);
-            } elseif (null !== json_decode($value)) {
-                $result[$key] = json_decode($value, true);
             } else {
                 $result[$key] = $value;
             }
@@ -49,8 +47,9 @@ class InlineFixtures implements AliceFixtures
         return $result;
     }
 
-    public function isYamlArray($value)
+    public function isYaml($value)
     {
-        return preg_match('/^\[([^,]*)(\s?[,]?[^,])*\]$/', $value) > 0;
+        return preg_match('/^\[([^,]*)(\s?[,]?[^,])*\]|{(.+)}$/', $value) > 0;
     }
+
 }
