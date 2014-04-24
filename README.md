@@ -13,7 +13,7 @@ Installation
 
 Through Composer :
 
-        $ composer require --dev "rezzza/alice-extension:0.1.*@dev"
+        $ composer require --dev "rezzza/alice-extension:~0.1"
 
 Configure your behat.yml :
 ```yml
@@ -66,7 +66,6 @@ If you use yaml file, you should consider put your default values in it thanks t
 
 And use inline fixtures to override values you need.
 
-**Warning** Waiting Alice implements the template inheritance in stable version, you should force composer to use the dev-master if you need this feature.
 
 Lifetime
 --------
