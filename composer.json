@@ -13,8 +13,8 @@
     "require": {
         "php":                      ">=5.3.2",
         "behat/behat":              "~2.5.0",
-        "behat/symfony2-extension": "1.1.*@dev",
-        "nelmio/alice":             "1.6.*@dev",
+        "behat/symfony2-extension": "~1.1",
+        "nelmio/alice":             "~1.7",
         "doctrine/data-fixtures":   "2.0.*@dev"
     },
 
