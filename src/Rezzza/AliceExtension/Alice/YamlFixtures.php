@@ -20,6 +20,10 @@ class YamlFixtures implements AliceFixtures
 
     protected function loadYaml($file)
     {
+        if (!is_file($file)) {
+            return array();
+        }
+
         // Copy from Nelmio\Alice\Loader\Yaml to just process yaml
         ob_start();
         $loader = $this;

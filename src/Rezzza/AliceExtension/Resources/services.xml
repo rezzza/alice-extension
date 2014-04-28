@@ -20,12 +20,19 @@
             <tag name="behat.context.initializer" />
         </service>
 
-        <service id="behat.alice.loader" class="Nelmio\Alice\Loader\Base" />
+        <service id="behat.alice.loader" class="Rezzza\AliceExtension\Alice\Loader">
+            <argument type="service" id="sf2.doctrine.orm.entity_manager" />
+            <argument type="service" id="sf2.alice_extension.processor.registry" />
+        </service>
 
         <service id="behat.alice.hook_listener" class="Rezzza\AliceExtension\Context\EventSubscriber\HookListener">
             <argument type="service" id="behat.alice.executor" />
             <argument>%behat.alice.lifetime%</argument>
             <tag name="behat.event_subscriber" priority="0" />
+        </service>
+
+        <service id="sf2.alice_extension.processor.registry" class="Rezzza\AliceExtension\Alice\AggregateProcessorRegistry" factory-service="behat.alice.container_proxy" factory-method="get">
+            <argument>alice_extension.processor.registry</argument>
         </service>
 
         <service id="sf2.doctrine.orm.entity_manager" class="Doctrine\Common\Persistence\ObjectManager" factory-service="behat.alice.container_proxy" factory-method="get">

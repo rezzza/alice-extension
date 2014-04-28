@@ -9,7 +9,7 @@ use Doctrine\Fixture\Filter\ChainFilter;
 use Doctrine\Fixture\Loader\ClassLoader;
 use Doctrine\Fixture\Persistence\ManagerRegistryEventSubscriber;
 
-use Nelmio\Alice\Loader\Base as AliceLoader;
+use Rezzza\AliceExtension\Alice\Loader as AliceLoader;
 
 class AliceFixturesExecutor
 {
