@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="alice_extension.processor.registry" class="Rezzza\AliceExtension\Alice\AggregateProcessorRegistry">
+            <argument type="collection">
+                <argument type="service" id="alice_extension.processor.di_registry" />
+            </argument>
+        </service>
+
+        <service id="alice_extension.processor.di_registry" class="Rezzza\AliceExtension\Symfony\Bundle\Processor\DIProcessorRegistry">
+            <argument type="service" id="service_container" />
+            <!-- All services with tag "alice_extension.processor" are inserted here by AddProcessorCompilerPass -->
+            <argument type="collection" />
+        </service>
+    </services>
+</container>

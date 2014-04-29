@@ -21,9 +21,7 @@ class TestFixture implements ManagerRegistryFixture, AliceFixture
     public function import()
     {
         $em = $this->managerRegistry->getManager();
-        $objects = $this->alice->load($this->fixtures->load());
-        $persister = new \Nelmio\Alice\ORM\Doctrine($em);
-        $persister->persist($objects);
+        $this->alice->load($this->fixtures->load());
 
         // Ensure to close the connection to avoid mysql timeout
         $em->getConnection()->close();

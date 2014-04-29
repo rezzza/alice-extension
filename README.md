@@ -49,6 +49,7 @@ class FeatureContext extends MinkContext
         $this->useContext('alice', new AliceContext($parameters));
     }
 }
+?>
 ```
 
 So you can write in your features :
@@ -66,6 +67,28 @@ If you use yaml file, you should consider put your default values in it thanks t
 
 And use inline fixtures to override values you need.
 
+Hook for specific entities
+..................................
+Sometimes you need to apply specific operations for objects persisted. You can do it through the Symfony2 Bundle packed with this extension.
+
+Activate the bundle:
+```php
+<?php
+/***/
+class AppKernel extends Kernel
+{
+    public function registerBundles()
+    {
+        $bundles = array(
+            /***/
+            new Rezzza\AliceExtension\Symfony\Bundle\RezzzaAliceExtensionBundle()
+            /***/
+        );
+    }
+}
+?>
+```
+Then in your Symfony2 app you will be able to build some Alice processors via service. It should extends `Nelmio\Alice\ProcessorInterface` and registred via the tag `alice_extension.processor`
 
 Lifetime
 --------
