@@ -30,6 +30,8 @@ class TestFixture implements ManagerRegistryFixture, AliceFixture
     public function purge()
     {
         $em = $this->managerRegistry->getManager();
+        $em->clear();
+
         $purger = new ORMPurger($em);
         $purger->setPurgeMode(ORMPurger::PURGE_MODE_TRUNCATE);
         $purger->purge();
