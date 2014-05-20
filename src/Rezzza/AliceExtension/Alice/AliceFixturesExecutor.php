@@ -17,6 +17,8 @@ class AliceFixturesExecutor
 
     protected $doctrine;
 
+    protected $yamlLoaded = false;
+
     public function __construct(ManagerRegistry $doctrine, AliceLoader $alice, $fixturesFile = null)
     {
         $this->doctrine = $doctrine;
@@ -30,8 +32,9 @@ class AliceFixturesExecutor
             new InlineFixtures($className, $columnKey, $data)
         );
 
-        if (null !== $this->fixturesFile) {
+        if (null !== $this->fixturesFile && !$this->yamlLoaded) {
             array_unshift($fixtures, new YamlFixtures($this->fixturesFile));
+            $this->yamlLoaded = true;
         }
 
         $fixtures = new MultipleFixtures($fixtures);
@@ -57,15 +60,22 @@ class AliceFixturesExecutor
             new ManagerRegistryEventSubscriber($this->doctrine)
         );
 
+        $this->reset();
+
         $this->execute($configuration, Executor::PURGE);
     }
 
-    protected function execute($configuration, $flag)
+    private function execute($configuration, $flag)
     {
         $executor      = new Executor($configuration);
         $classLoader   = new ClassLoader(array('Rezzza\AliceExtension\Fixture\TestFixture'));
         $filter        = new ChainFilter();
 
         $executor->execute($classLoader, $filter, $flag);
+    }
+
+    private function reset()
+    {
+        $this->yamlLoaded = false;
     }
 }
