@@ -23,6 +23,8 @@
         <service id="behat.alice.loader" class="Rezzza\AliceExtension\Alice\Loader">
             <argument type="service" id="sf2.doctrine.orm.entity_manager" />
             <argument type="service" id="sf2.alice_extension.processor.registry" />
+            <argument>%behat.alice.faker.locale%</argument>
+            <argument>%behat.alice.faker.providers%</argument>
         </service>
 
         <service id="behat.alice.hook_listener" class="Rezzza\AliceExtension\Context\EventSubscriber\HookListener">

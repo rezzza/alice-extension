@@ -22,6 +22,9 @@ default:
         Rezzza\AliceExtension\Extension:
             fixtures: /path/to/your/fixtures.yml
             lifetime: (scenario|feature)
+            faker:
+                locale: en_US #default
+                providers: []
 ```
 
 To write your `fixtures.yml` please report to [Alice documentation](https://github.com/nelmio/alice#creating-fixtures)
@@ -87,8 +90,33 @@ class AppKernel extends Kernel
     }
 }
 ?>
-```
+
 Then in your Symfony2 app you will be able to build some Alice processors via service. It should extends `Nelmio\Alice\ProcessorInterface` and registred via the tag `alice_extension.processor`
+=======
+
+Faker Providers
+---------------
+
+Some providers are available on AliceExtension:
+
+- NullProvider: `<null>`
+- FixedDateTimeProvider: `<fixedDateTime("+1 hour")>`
+
+You can add them (or your own) easily in behat.yml configuration:
+
+```yml
+default:
+    extensions:
+        Rezzza\AliceExtension\Extension:
+            .....
+            faker:
+                locale: en_US #default
+                providers:
+                    - \Rezzza\AliceExtension\Providers\NullProvider
+                    - \Rezzza\AliceExtension\Providers\FixedDateTimeProvider
+                    - \Acme\Providers\YourOwnProvider
+```
+
 
 Lifetime
 --------

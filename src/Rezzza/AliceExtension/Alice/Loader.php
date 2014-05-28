@@ -12,9 +12,9 @@ class Loader extends Base
 
     private $processorRegistry;
 
-    public function __construct(ObjectManager $objectManager, ProcessorRegistry $processorRegistry)
+    public function __construct(ObjectManager $objectManager, ProcessorRegistry $processorRegistry, $locale = "en_US", array $providers = array())
     {
-        parent::__construct();
+        parent::__construct($locale, $providers);
         $this->objectManager = $objectManager;
         $this->processorRegistry = $processorRegistry;
     }
