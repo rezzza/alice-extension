@@ -20,7 +20,10 @@
             <tag name="behat.context.initializer" />
         </service>
 
-        <service id="behat.alice.loader" class="Nelmio\Alice\Loader\Base" />
+        <service id="behat.alice.loader" class="Nelmio\Alice\Loader\Base">
+            <argument>%behat.alice.faker.locale%</argument>
+            <argument>%behat.alice.faker.providers%</argument>
+        </service>
 
         <service id="behat.alice.hook_listener" class="Rezzza\AliceExtension\Context\EventSubscriber\HookListener">
             <argument type="service" id="behat.alice.executor" />

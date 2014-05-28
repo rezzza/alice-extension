@@ -22,6 +22,9 @@ default:
         Rezzza\AliceExtension\Extension:
             fixtures: /path/to/your/fixtures.yml
             lifetime: (scenario|feature)
+            faker:
+                locale: en_US #default
+                providers: []
 ```
 
 To write your `fixtures.yml` please report to [Alice documentation](https://github.com/nelmio/alice#creating-fixtures)
@@ -65,6 +68,29 @@ Feature: Test My feature
 If you use yaml file, you should consider put your default values in it thanks to [template inheritance](https://github.com/nelmio/alice#fixture-inheritance).
 
 And use inline fixtures to override values you need.
+
+Faker Providers
+---------------
+
+Some providers are available on AliceExtension:
+
+- NullProvider: `<null>`
+- FixedDateTimeProvider: `<fixedDateTime("+1 hour")>`
+
+You can add them (or your own) easily in behat.yml configuration:
+
+```yml
+default:
+    extensions:
+        Rezzza\AliceExtension\Extension:
+            .....
+            faker:
+                locale: en_US #default
+                providers:
+                    - \Rezzza\AliceExtension\Providers\NullProvider
+                    - \Rezzza\AliceExtension\Providers\FixedDateTimeProvider
+                    - \Acme\Providers\YourOwnProvider
+```
 
 
 Lifetime
