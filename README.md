@@ -90,9 +90,9 @@ class AppKernel extends Kernel
     }
 }
 ?>
+```
 
 Then in your Symfony2 app you will be able to build some Alice processors via service. It should extends `Nelmio\Alice\ProcessorInterface` and registred via the tag `alice_extension.processor`
-=======
 
 Faker Providers
 ---------------
