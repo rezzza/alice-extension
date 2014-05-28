@@ -29,6 +29,9 @@ class Extension implements ExtensionInterface
         if (isset($config['lifetime'])) {
             $container->setParameter('behat.alice.lifetime', $config['lifetime']);
         }
+
+        $container->setParameter('behat.alice.faker.locale', $config['faker']['locale']);
+        $container->setParameter('behat.alice.faker.providers', $config['faker']['providers']);
     }
 
     /**
@@ -44,6 +47,22 @@ class Extension implements ExtensionInterface
                 ->scalarNode('fixtures')
                 ->end()
                 ->scalarNode('lifetime')
+                ->end()
+                ->arrayNode('faker')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('locale')->defaultValue('en_US')->end()
+                        ->arrayNode('providers')
+                            ->beforeNormalization()
+                                ->always(function($v) {
+                                    return array_map(function($class) {
+                                        return new $class();
+                                    }, $v);
+                                })
+                            ->end()
+                            ->prototype('variable')->end()
+                        ->end()
+                    ->end()
                 ->end()
             ->end()
         ->end();
