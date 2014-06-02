@@ -6,46 +6,54 @@
     <parameters>
         <parameter key="behat.alice.fixtures">null</parameter>
         <parameter key="behat.alice.lifetime">feature</parameter>
+        <parameter key="behat.alice.executor.class">Rezzza\AliceExtension\Alice\AliceFixturesExecutor</parameter>
+        <parameter key="behat.alice.initializer.class">Rezzza\AliceExtension\Context\Initializer\AliceExecutorInitializer</parameter>
+        <parameter key="behat.alice.loader.class">Rezzza\AliceExtension\Alice\Loader</parameter>
+        <parameter key="behat.alice.hook_listener.class">Rezzza\AliceExtension\Context\EventSubscriber\HookListener</parameter>
+        <parameter key="sf2.alice_extension.processor.registry.class">Rezzza\AliceExtension\Alice\AggregateProcessorRegistry</parameter>
+        <parameter key="sf2.doctrine.orm.entity_manager.class">Doctrine\Common\Persistence\ObjectManager</parameter>
+        <parameter key="sf2.doctrine.class">Doctrine\Common\Persistence\ManagerRegistry</parameter>
+        <parameter key="behat.alice.container_proxy.class">Rezzza\AliceExtension\Symfony\ContainerProxy</parameter>
     </parameters>
 
     <services>
-        <service id="behat.alice.executor" class="Rezzza\AliceExtension\Alice\AliceFixturesExecutor">
+        <service id="behat.alice.executor" class="%behat.alice.executor.class%">
             <argument type="service" id="sf2.doctrine" />
             <argument type="service" id="behat.alice.loader" />
             <argument>%behat.alice.fixtures%</argument>
         </service>
 
-        <service id="behat.alice.initializer" class="Rezzza\AliceExtension\Context\Initializer\AliceExecutorInitializer">
+        <service id="behat.alice.initializer" class="%behat.alice.initializer.class%">
             <argument type="service" id="behat.alice.executor" />
             <tag name="behat.context.initializer" />
         </service>
 
-        <service id="behat.alice.loader" class="Rezzza\AliceExtension\Alice\Loader">
+        <service id="behat.alice.loader" class="%behat.alice.loader.class%">
             <argument type="service" id="sf2.doctrine.orm.entity_manager" />
             <argument type="service" id="sf2.alice_extension.processor.registry" />
             <argument>%behat.alice.faker.locale%</argument>
             <argument>%behat.alice.faker.providers%</argument>
         </service>
 
-        <service id="behat.alice.hook_listener" class="Rezzza\AliceExtension\Context\EventSubscriber\HookListener">
+        <service id="behat.alice.hook_listener" class="%behat.alice.hook_listener.class%">
             <argument type="service" id="behat.alice.executor" />
             <argument>%behat.alice.lifetime%</argument>
             <tag name="behat.event_subscriber" priority="0" />
         </service>
 
-        <service id="sf2.alice_extension.processor.registry" class="Rezzza\AliceExtension\Alice\AggregateProcessorRegistry" factory-service="behat.alice.container_proxy" factory-method="get">
+        <service id="sf2.alice_extension.processor.registry" class="%sf2.alice_extension.processor.registry.class%" factory-service="behat.alice.container_proxy" factory-method="get">
             <argument>alice_extension.processor.registry</argument>
         </service>
 
-        <service id="sf2.doctrine.orm.entity_manager" class="Doctrine\Common\Persistence\ObjectManager" factory-service="behat.alice.container_proxy" factory-method="get">
+        <service id="sf2.doctrine.orm.entity_manager" class="%sf2.doctrine.orm.entity_manager.class%" factory-service="behat.alice.container_proxy" factory-method="get">
             <argument>doctrine.orm.default_entity_manager</argument>
         </service>
 
-        <service id="sf2.doctrine" class="Doctrine\Common\Persistence\ManagerRegistry" factory-service="behat.alice.container_proxy" factory-method="get">
+        <service id="sf2.doctrine" class="%sf2.doctrine.class%" factory-service="behat.alice.container_proxy" factory-method="get">
             <argument>doctrine</argument>
         </service>
 
-        <service id="behat.alice.container_proxy" class="Rezzza\AliceExtension\Symfony\ContainerProxy">
+        <service id="behat.alice.container_proxy" class="%behat.alice.container_proxy.class%">
             <argument type="service" id="behat.symfony2_extension.kernel" />
         </service>
     </services>
