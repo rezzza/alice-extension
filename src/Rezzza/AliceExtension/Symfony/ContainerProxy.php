@@ -22,4 +22,9 @@ class ContainerProxy
     {
         return $this->container->getParameter($id);
     }
+
+    public function has($id)
+    {
+        return $this->container->has($id);
+    }
 }

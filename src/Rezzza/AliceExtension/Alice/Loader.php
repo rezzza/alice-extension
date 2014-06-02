@@ -12,6 +12,8 @@ class Loader extends Base
 
     private $processorRegistry;
 
+    private $persister;
+
     public function __construct(ObjectManager $objectManager, ProcessorRegistry $processorRegistry, $locale = "en_US", array $providers = array())
     {
         parent::__construct($locale, $providers);
@@ -21,11 +23,19 @@ class Loader extends Base
 
     public function load($data)
     {
-        $objects = parent::load($data);
-        $this->persist(new \Nelmio\Alice\ORM\Doctrine($this->objectManager), $objects);
+        $this->persist(parent::load($data));
     }
 
-    private function persist(ORMInterface $persister, array $objects)
+    protected function getPersister()
+    {
+        if (null === $this->persister) {
+            $this->persister = new \Nelmio\Alice\ORM\Doctrine($this->objectManager);
+        }
+
+        return $this->persister;
+    }
+
+    private function persist(array $objects)
     {
         foreach ($objects as $obj) {
             $className = get_class($obj);
@@ -36,7 +46,7 @@ class Loader extends Base
             }
         }
 
-        $persister->persist($objects);
+        $this->getPersister()->persist($objects);
 
         foreach ($objects as $obj) {
             $className = get_class($obj);
