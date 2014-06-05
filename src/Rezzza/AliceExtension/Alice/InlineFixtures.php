@@ -37,19 +37,10 @@ class InlineFixtures implements AliceFixtures
         $result = array();
 
         foreach ($data as $key => $value) {
-            if ($this->isYaml($value)) {
-                $result[$key] = YamlParser::parse($value);
-            } else {
-                $result[$key] = $value;
-            }
+            // Always parse with Yaml to support array, true, false and null values
+            $result[$key] = YamlParser::parse($value);
         }
 
         return $result;
     }
-
-    public function isYaml($value)
-    {
-        return preg_match('/^\[([^,]*)(\s?[,]?[^,])*\]|{(.+)}$/', $value) > 0;
-    }
-
 }
