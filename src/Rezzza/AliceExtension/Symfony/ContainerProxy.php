@@ -4,6 +4,7 @@ namespace Rezzza\AliceExtension\Symfony;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\DependencyInjection\ScopeInterface;
 
 class ContainerProxy implements ContainerInterface
 {
