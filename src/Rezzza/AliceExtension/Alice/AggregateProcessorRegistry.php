@@ -4,9 +4,9 @@ namespace Rezzza\AliceExtension\Alice;
 
 class AggregateProcessorRegistry implements ProcessorRegistry
 {
-    private $registries;
+    private $registries = array();
 
-    private $processors;
+    private $processors = array();
 
     public function __construct(array $registries = array())
     {
