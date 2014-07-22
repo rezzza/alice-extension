@@ -121,6 +121,7 @@ default:
         Rezzza\AliceExtension\Extension:
             adapters:
                 elastica:
+                    index_service: fos_elastica.index.name_of_your_index
                     mapping:
                         myType: My\Fully\Model
                 orm: ~
