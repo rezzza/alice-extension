@@ -15,10 +15,16 @@ class HookListener implements EventSubscriberInterface
 
     private $lifetime;
 
-    public function __construct(AliceFixturesExecutor $executor, $lifetime)
+    private $adapters;
+
+    private $defaultAdapter;
+
+    public function __construct(AliceFixturesExecutor $executor, $lifetime, array $adapters, $defaultAdapter = 'orm')
     {
         $this->executor = $executor;
         $this->lifetime = $lifetime;
+        $this->adapters = $adapters;
+        $this->defaultAdapter = $defaultAdapter;
     }
 
     public static function getSubscribedEvents()
@@ -43,6 +49,9 @@ class HookListener implements EventSubscriberInterface
             return;
         }
 
+        list($adapter, $fixtureClass) = $this->extractAdapterConfig($event->getFeature()->getTags());
+
+        $this->executor->changeAdapter($adapter, $fixtureClass);
         $this->executor->purge();
     }
 
@@ -57,8 +66,12 @@ class HookListener implements EventSubscriberInterface
             return;
         }
 
+        list($adapter, $fixtureClass) = $this->extractAdapterConfig($event->getScenario()->getTags());
+
+        $this->executor->changeAdapter($adapter, $fixtureClass);
         $this->executor->purge();
     }
+
 
     /**
      * Listens to "outline.example.before" event.
@@ -72,5 +85,37 @@ class HookListener implements EventSubscriberInterface
         }
 
         $this->executor->purge();
+    }
+
+    private function isAliceTag($tag)
+    {
+        return 'alice' === current(explode(':', $tag));
+    }
+
+    private function extractAdapterConfig($tags)
+    {
+        $adapter = $this->defaultAdapter;
+
+        foreach ($tags as $tag) {
+            if ($this->isAliceTag($tag)) {
+                $adapter = $this->extractAdapterName($tag);
+            }
+        }
+
+        if (!isset($this->adapters[$adapter])) {
+            throw new \LogicException(sprintf('No adapter registred with name "%s" in alice-extension', $adapter));
+        }
+
+        return array(
+            $adapter,
+            $this->adapters[$adapter]
+        );
+    }
+
+    private function extractAdapterName($tag)
+    {
+        $res = explode(':', $tag);
+
+        return $res[1];
     }
 }

@@ -24,6 +24,11 @@
         "polishsymfonycommunity/symfony2-mocker-extension": "*"
     },
 
+    "suggest": {
+        "doctrine/orm": "To use ORM adapter",
+        "friendsofsymfony/elastica-bundle" : "To use ElasticSearch adapter"
+    },
+
     "autoload": {
         "psr-0": { "Rezzza\\AliceExtension": "src/" }
     },

@@ -56,7 +56,7 @@ class FeatureContext extends MinkContext
 ```
 
 So you can write in your features :
-```
+```feature
 Feature: Test My feature
 
     Background: Write fixtures
@@ -71,7 +71,8 @@ If you use yaml file, you should consider put your default values in it thanks t
 And use inline fixtures to override values you need.
 
 Hook for specific entities
-..................................
+--------------------------
+
 Sometimes you need to apply specific operations for objects persisted. You can do it through the Symfony2 Bundle packed with this extension.
 
 Activate the bundle:
@@ -93,6 +94,51 @@ class AppKernel extends Kernel
 ```
 
 Then in your Symfony2 app you will be able to build some Alice processors via service. It should extends `Nelmio\Alice\ProcessorInterface` and registred via the tag `alice_extension.processor`
+
+Adapters
+--------
+
+Currently we support :
+
+* DoctrineORM
+* ElasticSearch (through FOSElasticaBundle)
+
+```yml
+default:
+    extensions:
+        Rezzza\AliceExtension\Extension:
+            adapters:
+                elastica: ~
+                orm: ~
+
+```
+
+For ElasticSearch we should use `mapping` config to indicate which ElasticSearch type alice should use to persist your mode:
+
+```yml
+default:
+    extensions:
+        Rezzza\AliceExtension\Extension:
+            adapters:
+                elastica:
+                    mapping:
+                        myType: My\Fully\Model
+                orm: ~
+
+```
+
+Then in your features you should use tag to specify which adapters alice should use :
+
+```feature
+@alice:elastica
+Feature: Test My feature
+
+    Background: Write fixtures
+        Given I load "Vendor\My\Entity" fixtures where column "key" is the key:
+            | key      | id | name |
+            | fixture1 | 1  | jean |
+            | fixture2 | 2  | marc |
+```
 
 Faker Providers
 ---------------
