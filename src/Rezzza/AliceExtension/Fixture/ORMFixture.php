@@ -10,7 +10,7 @@ use Rezzza\AliceExtension\Alice\AliceFixture;
 use Rezzza\AliceExtension\Alice\AliceFixtures;
 use Rezzza\AliceExtension\Doctrine\ORMPurger;
 
-class TestFixture implements ManagerRegistryFixture, AliceFixture
+class ORMFixture implements ManagerRegistryFixture, AliceFixture
 {
     private $managerRegistry;
 
@@ -21,7 +21,11 @@ class TestFixture implements ManagerRegistryFixture, AliceFixture
     public function import()
     {
         $em = $this->managerRegistry->getManager();
-        $this->alice->load($this->fixtures->load());
+
+        $this->alice
+            ->changePersister(new \Nelmio\Alice\ORM\Doctrine($em))
+            ->load($this->fixtures->load())
+        ;
 
         // Ensure to close the connection to avoid mysql timeout
         $em->getConnection()->close();
@@ -30,8 +34,6 @@ class TestFixture implements ManagerRegistryFixture, AliceFixture
     public function purge()
     {
         $em = $this->managerRegistry->getManager();
-        $em->clear();
-
         $purger = new ORMPurger($em);
         $purger->setPurgeMode(ORMPurger::PURGE_MODE_TRUNCATE);
         $purger->purge();

@@ -14,11 +14,14 @@
         <parameter key="sf2.doctrine.orm.entity_manager.class">Doctrine\Common\Persistence\ObjectManager</parameter>
         <parameter key="sf2.doctrine.class">Doctrine\Common\Persistence\ManagerRegistry</parameter>
         <parameter key="behat.alice.container_proxy.class">Rezzza\AliceExtension\Symfony\ContainerProxy</parameter>
+        <parameter key="behat.alice.adapters"></parameter>
+        <parameter key="behat.alice.elastica_mapping" type="collection"></parameter>
+        <parameter key="behat.alice.elastica_index"></parameter>
     </parameters>
 
     <services>
         <service id="behat.alice.executor" class="%behat.alice.executor.class%">
-            <argument type="service" id="sf2.doctrine" />
+            <argument type="service" id="behat.alice.subscriber_factory.registry" />
             <argument type="service" id="behat.alice.loader" />
             <argument>%behat.alice.fixtures%</argument>
         </service>
@@ -29,7 +32,6 @@
         </service>
 
         <service id="behat.alice.loader" class="%behat.alice.loader.class%">
-            <argument type="service" id="sf2.doctrine.orm.entity_manager" />
             <argument type="service" id="sf2.alice_extension.processor.registry" />
             <argument>%behat.alice.faker.locale%</argument>
             <argument>%behat.alice.faker.providers%</argument>
@@ -38,6 +40,7 @@
         <service id="behat.alice.hook_listener" class="%behat.alice.hook_listener.class%">
             <argument type="service" id="behat.alice.executor" />
             <argument>%behat.alice.lifetime%</argument>
+            <argument>%behat.alice.adapters%</argument>
             <tag name="behat.event_subscriber" priority="0" />
         </service>
 
@@ -53,8 +56,42 @@
             <argument>doctrine</argument>
         </service>
 
+        <service id="sf2.elastica.resetter" class="FOS\ElasticaBundle\Index\Resetter" factory-service="behat.alice.container_proxy" factory-method="get">
+            <argument>fos_elastica.resetter</argument>
+        </service>
+
+        <service id="sf2.serializer" class="JMS\Serializer\Serializer" factory-service="behat.alice.container_proxy" factory-method="get">
+            <argument>fos_elastica.serializer</argument>
+        </service>
+
+        <service id="sf2.elastica.index" class="FOS\ElasticaBundle\Elastica\Index" factory-service="behat.alice.container_proxy" factory-method="get">
+            <argument>%behat.alice.elastica_index%</argument>
+        </service>
+
         <service id="behat.alice.container_proxy" class="%behat.alice.container_proxy.class%">
             <argument type="service" id="behat.symfony2_extension.kernel" />
+        </service>
+
+        <service id="behat.alice.subscriber_factory.registry" class="Rezzza\AliceExtension\Adapter\SubscriberFactoryRegistry">
+            <argument type="service" id="service_container" />
+            <argument type="collection" />
+        </service>
+
+        <service id="behat.alice.orm_subscriber.factory" class="Rezzza\AliceExtension\Adapter\ORM\ORMSubscriberFactory">
+            <argument type="service" id="sf2.doctrine" />
+            <tag name="behat.alice.subscriber.factory" alias="orm" />
+        </service>
+
+        <service id="behat.alice.elastica_subscriber.factory" class="Rezzza\AliceExtension\Adapter\Elastica\ElasticaSubscriberFactory">
+            <argument type="service" id="behat.alice.elastica.persister" />
+            <argument type="service" id="sf2.elastica.resetter" />
+            <tag name="behat.alice.subscriber.factory" alias="elastica" />
+        </service>
+
+        <service id="behat.alice.elastica.persister" class="Rezzza\AliceExtension\Adapter\Elastica\Persister">
+            <argument type="service" id="sf2.elastica.index" />
+            <argument>%behat.alice.elastica_mapping%</argument>
+            <argument type="service" id="sf2.serializer" />
         </service>
     </services>
 </container>

@@ -8,17 +8,21 @@ use Nelmio\Alice\ORMInterface;
 
 class Loader extends Base
 {
-    private $objectManager;
-
     private $processorRegistry;
 
     private $persister;
 
-    public function __construct(ObjectManager $objectManager, ProcessorRegistry $processorRegistry, $locale = "en_US", array $providers = array())
+    public function __construct(ProcessorRegistry $processorRegistry, $locale = "en_US", array $providers = array())
     {
         parent::__construct($locale, $providers);
-        $this->objectManager = $objectManager;
         $this->processorRegistry = $processorRegistry;
+    }
+
+    public function changePersister($persister)
+    {
+        $this->persister = $persister;
+
+        return $this;
     }
 
     public function load($data)
@@ -28,10 +32,6 @@ class Loader extends Base
 
     protected function getPersister()
     {
-        if (null === $this->persister) {
-            $this->persister = new \Nelmio\Alice\ORM\Doctrine($this->objectManager);
-        }
-
         return $this->persister;
     }
 
