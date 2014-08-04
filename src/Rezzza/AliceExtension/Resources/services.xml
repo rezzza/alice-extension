@@ -17,6 +17,10 @@
         <parameter key="behat.alice.adapters"></parameter>
         <parameter key="behat.alice.elastica_mapping" type="collection"></parameter>
         <parameter key="behat.alice.elastica_index"></parameter>
+        <parameter key="behat.alice.orm_subscriber.factory.class">Rezzza\AliceExtension\Adapter\ORM\ORMSubscriberFactory</parameter>
+        <parameter key="behat.alice.subscriber_factory.registry.class">Rezzza\AliceExtension\Adapter\SubscriberFactoryRegistry</parameter>
+        <parameter key="behat.alice.elastica_subscriber.factory.class">Rezzza\AliceExtension\Adapter\Elastica\ElasticaSubscriberFactory</parameter>
+        <parameter key="behat.alice.elastica.persister.class">Rezzza\AliceExtension\Adapter\Elastica\Persister</parameter>
     </parameters>
 
     <services>
@@ -72,23 +76,23 @@
             <argument type="service" id="behat.symfony2_extension.kernel" />
         </service>
 
-        <service id="behat.alice.subscriber_factory.registry" class="Rezzza\AliceExtension\Adapter\SubscriberFactoryRegistry">
+        <service id="behat.alice.subscriber_factory.registry" class="%behat.alice.subscriber_factory.registry.class%">
             <argument type="service" id="service_container" />
             <argument type="collection" />
         </service>
 
-        <service id="behat.alice.orm_subscriber.factory" class="Rezzza\AliceExtension\Adapter\ORM\ORMSubscriberFactory">
+        <service id="behat.alice.orm_subscriber.factory" class="%behat.alice.orm_subscriber.factory.class%">
             <argument type="service" id="sf2.doctrine" />
             <tag name="behat.alice.subscriber.factory" alias="orm" />
         </service>
 
-        <service id="behat.alice.elastica_subscriber.factory" class="Rezzza\AliceExtension\Adapter\Elastica\ElasticaSubscriberFactory">
+        <service id="behat.alice.elastica_subscriber.factory" class="%behat.alice.elastica_subscriber.factory.class%">
             <argument type="service" id="behat.alice.elastica.persister" />
             <argument type="service" id="sf2.elastica.resetter" />
             <tag name="behat.alice.subscriber.factory" alias="elastica" />
         </service>
 
-        <service id="behat.alice.elastica.persister" class="Rezzza\AliceExtension\Adapter\Elastica\Persister">
+        <service id="behat.alice.elastica.persister" class="%behat.alice.elastica.persister.class%">
             <argument type="service" id="sf2.elastica.index" />
             <argument>%behat.alice.elastica_mapping%</argument>
             <argument type="service" id="sf2.serializer" />
