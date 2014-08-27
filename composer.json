@@ -20,8 +20,12 @@
 
     "require-dev": {
         "atoum/atoum-bundle": "dev-master",
-        "atoum/atoum": "dev-master",
-        "polishsymfonycommunity/symfony2-mocker-extension": "*"
+        "atoum/atoum": "dev-master"
+    },
+
+    "suggest": {
+        "doctrine/orm": "To use ORM adapter",
+        "friendsofsymfony/elastica-bundle" : "To use ElasticSearch adapter"
     },
 
     "autoload": {
@@ -30,7 +34,7 @@
 
     "extra": {
         "branch-alias": {
-            "dev-master": "0.1.x-dev"
+            "dev-master": "0.2.x-dev"
         }
     }
 }
