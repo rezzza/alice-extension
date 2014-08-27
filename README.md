@@ -1,11 +1,13 @@
 Alice Extension for Behat
 =========================
 
-[![Build Status](https://travis-ci.org/rezzza/alice-extension.svg?branch=master)](https://travis-ci.org/rezzza/alice-extension)
-
 Make [Alice](https://github.com/nelmio/alice) work with [Behat](https://github.com/behat/behat).
 
 You can import fixtures through a yaml file and from a behat step.
+
+**Versions**  
+* 1.0.x version, for Behat 3.x: [![Build Status](https://travis-ci.org/rezzza/alice-extension.svg?branch=master)](https://travis-ci.org/rezzza/alice-extension)
+* 0.1.x version, for Behat 2.5.x
 
 
 Installation
@@ -13,7 +15,7 @@ Installation
 
 Through Composer :
 
-        $ composer require --dev "rezzza/alice-extension:~0.1"
+        $ composer require --dev "rezzza/alice-extension:1.0.*@dev"
 
 Configure your behat.yml :
 ```yml
@@ -34,28 +36,17 @@ This extension need `Symfony2Extension` to work. Have a look to [its documentati
 Usage
 -----
 
-In your behat context you can activate `AliceContext`.
+In your behat configuration you can activate `AliceContext` for the test suite you need
 
-```php
-<?php
-
-namespace Vendor\My\Features;
-
-use Behat\MinkExtension\Context\MinkContext;
-
-use Rezzza\AliceExtension\Context\AliceContext;
-
-class FeatureContext extends MinkContext
-{
-    public function __construct(array $parameters)
-    {
-        $this->useContext('alice', new AliceContext($parameters));
-    }
-}
-?>
+```yml
+default:
+    suites:
+        default:
+            contexts:
+                - Rezzza\AliceExtension\Context\AliceContext
 ```
 
-So you can write in your features :
+So you can now write in your features :
 ```feature
 Feature: Test My feature
 

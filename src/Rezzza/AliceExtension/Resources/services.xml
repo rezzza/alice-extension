@@ -34,7 +34,7 @@
 
         <service id="behat.alice.initializer" class="%behat.alice.initializer.class%">
             <argument type="service" id="behat.alice.executor" />
-            <tag name="behat.context.initializer" />
+            <tag name="context.initializer" />
         </service>
 
         <service id="behat.alice.loader" class="%behat.alice.loader.class%">
@@ -47,7 +47,7 @@
             <argument type="service" id="behat.alice.executor" />
             <argument>%behat.alice.lifetime%</argument>
             <argument>%behat.alice.adapters%</argument>
-            <tag name="behat.event_subscriber" priority="0" />
+            <tag name="event_dispatcher.subscriber" priority="0" />
         </service>
 
         <service id="sf2.alice_extension.processor.registry" class="%sf2.alice_extension.processor.registry.class%" factory-service="behat.alice.container_proxy" factory-method="get">
@@ -75,7 +75,7 @@
         </service>
 
         <service id="behat.alice.container_proxy" class="%behat.alice.container_proxy.class%">
-            <argument type="service" id="behat.symfony2_extension.kernel" />
+            <argument type="service" id="symfony2_extension.kernel" />
         </service>
 
         <service id="behat.alice.subscriber_factory.registry" class="%behat.alice.subscriber_factory.registry.class%">

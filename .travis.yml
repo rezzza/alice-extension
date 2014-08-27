@@ -4,18 +4,21 @@ php:
     - 5.3
     - 5.4
     - 5.5
+    - 5.6
+    - hhvm
+
+matrix:
+    allow_failures:
+        - php: hhvm
 
 before_script:
-    - wget http://getcomposer.org/composer.phar
-    - php composer.phar install --dev --prefer-source
+    - composer self-update || true
+    - composer install --dev --prefer-source
     - mkdir -p web/code-coverage
+    - cp app/config/parameters.yml.dist app/config/parameters.yml
+    - app/console doctrine:database:create -e test
+    - app/console doctrine:schema:create --env=test
 
 script:
     - vendor/bin/atoum
-
-notifications:
-    email:
-        recipients:
-            - ci@verylastroom.com
-        on_success: change
-        on_failure: change
+    - bin/behat

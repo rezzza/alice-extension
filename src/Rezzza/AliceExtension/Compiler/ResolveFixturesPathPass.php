@@ -9,7 +9,7 @@ class ResolveFixturesPathPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $sfContainer = $container->get('behat.symfony2_extension.kernel')->getContainer();
+        $sfContainer = $container->get('symfony2_extension.kernel')->getContainer();
         $fixturesPath = $container->getParameter('behat.alice.fixtures');
         $appPath = $sfContainer->getParameter('kernel.root_dir');
 
