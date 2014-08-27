@@ -2,9 +2,10 @@
 
 namespace Rezzza\AliceExtension\Context\EventSubscriber;
 
-use Behat\Behat\Event\FeatureEvent;
-use Behat\Behat\Event\ScenarioEvent;
-use Behat\Behat\Event\OutlineExampleEvent;
+use Behat\Behat\EventDispatcher\Event\BeforeFeatureTested;
+use Behat\Behat\EventDispatcher\Event\FeatureTested;
+use Behat\Behat\EventDispatcher\Event\BeforeScenarioTested;
+use Behat\Behat\EventDispatcher\Event\ScenarioTested;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use Rezzza\AliceExtension\Alice\AliceFixturesExecutor;
@@ -29,13 +30,10 @@ class HookListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        $events = array(
-           'beforeFeature',
-           'beforeScenario',
-           'beforeOutlineExample'
+        return array(
+           FeatureTested::BEFORE => 'beforeFeature',
+           ScenarioTested::BEFORE => 'beforeScenario'
         );
-
-        return array_combine($events, $events);
     }
 
     /**
@@ -43,7 +41,7 @@ class HookListener implements EventSubscriberInterface
      *
      * @param \Behat\Behat\Event\FeatureEvent $event
      */
-    public function beforeFeature(FeatureEvent $event)
+    public function beforeFeature(BeforeFeatureTested $event)
     {
         if ('feature' !== $this->lifetime) {
             return;
@@ -60,13 +58,13 @@ class HookListener implements EventSubscriberInterface
      *
      * @param \Behat\Behat\Event\ScenarioEvent $event
      */
-    public function beforeScenario(ScenarioEvent $event)
+    public function beforeScenario(BeforeScenarioTested $event)
     {
         if ('scenario' !== $this->lifetime) {
             return;
         }
 
-        list($adapter, $fixtureClass) = $this->extractAdapterConfig($event->getScenario()->getTags());
+        list($adapter, $fixtureClass) = $this->extractAdapterConfig($event->getFeature()->getTags());
 
         $this->executor->changeAdapter($adapter, $fixtureClass);
         $this->executor->purge();
@@ -78,14 +76,14 @@ class HookListener implements EventSubscriberInterface
      *
      * @param \Behat\Behat\Event\OutlineExampleEvent $event
      */
-    public function beforeOutlineExample(OutlineExampleEvent $event)
+    /*public function beforeOutlineExample(OutlineExampleEvent $event)
     {
         if ('scenario' !== $this->lifetime) {
             return;
         }
 
         $this->executor->purge();
-    }
+    }*/
 
     private function isAliceTag($tag)
     {
