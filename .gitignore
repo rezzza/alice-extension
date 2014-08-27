@@ -2,3 +2,10 @@ vendor
 composer.lock
 bin
 web/code-coverage
+
+/app/cache/*
+/app/logs/*
+!app/cache/.gitkeep
+!app/logs/.gitkeep
+
+/app/config/parameters.yml

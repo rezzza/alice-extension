@@ -1,0 +1,19 @@
+default:
+    suites:
+        default:
+            contexts:
+                - FeatureContext
+                - Rezzza\AliceExtension\Context\AliceContext
+
+    translation:
+        locale: en
+
+    extensions:
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: app/autoload.php
+                path: app/AppKernel.php
+                class: AppKernel
+                env: test
+                debug: true
+        Rezzza\AliceExtension\Extension: ~
