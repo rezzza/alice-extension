@@ -15,13 +15,10 @@ before_script:
     - composer self-update || true
     - composer install --dev --prefer-source
     - mkdir -p web/code-coverage
+    - cp app/config/parameters.yml.dist app/config/parameters.yml
+    - app/console doctrine:database:create -e test
+    - app/console doctrine:schema:create --env=test
 
 script:
     - vendor/bin/atoum
-
-notifications:
-    email:
-        recipients:
-            - ci@verylastroom.com
-        on_success: change
-        on_failure: change
+    - bin/behat
