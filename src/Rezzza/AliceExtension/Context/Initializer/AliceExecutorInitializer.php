@@ -2,13 +2,13 @@
 
 namespace Rezzza\AliceExtension\Context\Initializer;
 
-use Behat\Behat\Context\ContextInterface;
-use Behat\Behat\Context\Initializer\InitializerInterface;
+use Behat\Behat\Context\Context;
+use Behat\Behat\Context\Initializer\ContextInitializer;
 
 use Rezzza\AliceExtension\Alice\AliceAwareInterface;
 use Rezzza\AliceExtension\Alice\AliceFixturesExecutor;
 
-class AliceExecutorInitializer implements InitializerInterface
+class AliceExecutorInitializer implements ContextInitializer
 {
     private $executor;
 
@@ -24,18 +24,12 @@ class AliceExecutorInitializer implements InitializerInterface
      *
      * @return Boolean
      */
-    public function supports(ContextInterface $context)
+    public function initializeContext(Context $context)
     {
-        return $context instanceof AliceAwareInterface;
-    }
+        if (!$context instanceof AliceAwareInterface) {
+            return;
+        }
 
-    /**
-     * Initializes provided context.
-     *
-     * @param ContextInterface $context
-     */
-    public function initialize(ContextInterface $context)
-    {
         $context->setExecutor($this->executor);
     }
 }

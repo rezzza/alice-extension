@@ -1,11 +1,13 @@
 Alice Extension for Behat
 =========================
 
-[![Build Status](https://travis-ci.org/rezzza/alice-extension.svg?branch=master)](https://travis-ci.org/rezzza/alice-extension)
-
 Make [Alice](https://github.com/nelmio/alice) work with [Behat](https://github.com/behat/behat).
 
 You can import fixtures through a yaml file and from a behat step.
+
+**Versions**  
+* 1.0.x version, for Behat 3.x: [![Build Status](https://travis-ci.org/rezzza/alice-extension.svg?branch=master)](https://travis-ci.org/rezzza/alice-extension)
+* 0.1.x version, for Behat 2.5.x
 
 
 Installation
@@ -13,7 +15,7 @@ Installation
 
 Through Composer :
 
-        $ composer require --dev "rezzza/alice-extension:0.2.*@dev"
+        $ composer require --dev "rezzza/alice-extension:1.0.*@dev"
 
 Configure your behat.yml :
 ```yml
@@ -34,28 +36,18 @@ This extension need `Symfony2Extension` to work. Have a look to [its documentati
 Usage
 -----
 
-In your behat context you can activate `AliceContext`.
+In your behat configuration you can activate `AliceContext` for the test suite you need
 
-```php
-<?php
-
-namespace Vendor\My\Features;
-
-use Behat\MinkExtension\Context\MinkContext;
-
-use Rezzza\AliceExtension\Context\AliceContext;
-
-class FeatureContext extends MinkContext
-{
-    public function __construct(array $parameters)
-    {
-        $this->useContext('alice', new AliceContext($parameters));
-    }
-}
+```yml
+default:
+    suites:
+        default:
+            contexts:
+                - Rezzza\AliceExtension\Context\AliceContext
 ```
 
-So you can write in your features :
-```
+So you can now write in your features :
+```feature
 Feature: Test My feature
 
     Background: Write fixtures
@@ -68,6 +60,77 @@ Feature: Test My feature
 If you use yaml file, you should consider put your default values in it thanks to [template inheritance](https://github.com/nelmio/alice#fixture-inheritance).
 
 And use inline fixtures to override values you need.
+
+Hook for specific entities
+--------------------------
+
+Sometimes you need to apply specific operations for objects persisted. You can do it through the Symfony2 Bundle packed with this extension.
+
+Activate the bundle:
+```php
+<?php
+/***/
+class AppKernel extends Kernel
+{
+    public function registerBundles()
+    {
+        $bundles = array(
+            /***/
+            new Rezzza\AliceExtension\Symfony\Bundle\RezzzaAliceExtensionBundle()
+            /***/
+        );
+    }
+}
+?>
+```
+
+Then in your Symfony2 app you will be able to build some Alice processors via service. It should extends `Nelmio\Alice\ProcessorInterface` and registred via the tag `alice_extension.processor`
+
+Adapters
+--------
+
+Currently we support :
+
+* DoctrineORM
+* ElasticSearch (through FOSElasticaBundle)
+
+```yml
+default:
+    extensions:
+        Rezzza\AliceExtension\Extension:
+            adapters:
+                elastica: ~
+                orm: ~
+
+```
+
+For ElasticSearch we should use `mapping` config to indicate which ElasticSearch type alice should use to persist your mode:
+
+```yml
+default:
+    extensions:
+        Rezzza\AliceExtension\Extension:
+            adapters:
+                elastica:
+                    index_service: fos_elastica.index.name_of_your_index
+                    mapping:
+                        myType: My\Fully\Model
+                orm: ~
+
+```
+
+Then in your features you should use tag to specify which adapters alice should use :
+
+```feature
+@alice:elastica
+Feature: Test My feature
+
+    Background: Write fixtures
+        Given I load "Vendor\My\Entity" fixtures where column "key" is the key:
+            | key      | id | name |
+            | fixture1 | 1  | jean |
+            | fixture2 | 2  | marc |
+```
 
 Faker Providers
 ---------------
