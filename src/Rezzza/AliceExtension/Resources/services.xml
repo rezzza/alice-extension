@@ -4,7 +4,9 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="behat.alice.fixtures">null</parameter>
+        <parameter key="behat.alice.fixtures.default" type="collection"></parameter>
+        <parameter key="behat.alice.fixtures.key_paths" type="collection"></parameter>
+        <parameter key="behat.alice.fixture_stack.class">Rezzza\AliceExtension\Fixture\FixtureStack</parameter>
         <parameter key="behat.alice.lifetime">feature</parameter>
         <parameter key="behat.alice.executor.class">Rezzza\AliceExtension\Alice\AliceFixturesExecutor</parameter>
         <parameter key="behat.alice.initializer.class">Rezzza\AliceExtension\Context\Initializer\AliceExecutorInitializer</parameter>
@@ -29,7 +31,12 @@
         <service id="behat.alice.executor" class="%behat.alice.executor.class%">
             <argument type="service" id="behat.alice.subscriber_factory.registry" />
             <argument type="service" id="behat.alice.loader" />
-            <argument>%behat.alice.fixtures%</argument>
+            <argument type="service" id="behat.alice.fixture_stack" />
+        </service>
+
+        <service id="behat.alice.fixture_stack" class="%behat.alice.fixture_stack.class%">
+            <argument>%behat.alice.fixtures.default%</argument>
+            <argument>%behat.alice.fixtures.key_paths%</argument>
         </service>
 
         <service id="behat.alice.initializer" class="%behat.alice.initializer.class%">

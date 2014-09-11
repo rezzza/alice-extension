@@ -132,6 +132,41 @@ Feature: Test My feature
             | fixture2 | 2  | marc |
 ```
 
+Advanced Fixtures
+-----------------
+
+Fixtures can be managed through the configuration.
+
+```yml
+default:
+    extensions:
+        Rezzza\AliceExtension\Extension:
+            fixtures:
+                default: [users, products] # could be scalar if you want only one => users
+                key_paths:
+                    users: /src/path/to/your/fixtures.yml
+                    products: /src/path/to/your/fixtures.yml
+```
+
+With this kind of configuration, when you'll call step below, it'll load **default** fixtures (**users** and **products** in this example).
+
+```
+Given I load "Acme\Bundle\Entity\User" fixtures where column "key" is the key:
+    | key                  | emailAddress     | password |
+    | user1 (extends user) | chuck@norris.com | password |
+```
+
+You are able to load fixtures manually:
+
+```
+Given I load "default" fixtures   # will load users AND products
+Given I load "users" fixtures     # will load users
+Given I load "products" fixtures  # will load products
+```
+
+Of course, fixtures are loaded once.
+
+
 Faker Providers
 ---------------
 
