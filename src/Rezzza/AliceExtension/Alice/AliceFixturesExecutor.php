@@ -9,14 +9,13 @@ use Doctrine\Fixture\Loader\ClassLoader;
 
 use Rezzza\AliceExtension\Alice\Loader as AliceLoader;
 use Rezzza\AliceExtension\Adapter\SubscriberFactoryRegistry;
+use Rezzza\AliceExtension\Fixture\FixtureStack;
 
 class AliceFixturesExecutor
 {
-    protected $fixturesFile;
+    protected $fixtureStack;
 
     protected $alice;
-
-    protected $yamlLoaded = false;
 
     protected $fixtureClass;
 
@@ -24,11 +23,11 @@ class AliceFixturesExecutor
 
     protected $adapterRegistry;
 
-    public function __construct(SubscriberFactoryRegistry $adapterRegistry, AliceLoader $alice, $fixturesFile = null)
+    public function __construct(SubscriberFactoryRegistry $adapterRegistry, AliceLoader $alice, FixtureStack $fixtureStack)
     {
         $this->adapterRegistry = $adapterRegistry;
         $this->alice = $alice;
-        $this->fixturesFile = $fixturesFile;
+        $this->fixtureStack = $fixtureStack;
     }
 
     public function changeAdapter($name, $fixtureClass)
@@ -40,15 +39,29 @@ class AliceFixturesExecutor
     public function import($className, $columnKey, array $data)
     {
         $this->guardAgainstEmptyAdapterConfig();
-        $fixtures = array(
-            new InlineFixtures($className, $columnKey, $data)
-        );
 
-        if (null !== $this->fixturesFile && !$this->yamlLoaded) {
-            array_unshift($fixtures, new YamlFixtures($this->fixturesFile));
-            $this->yamlLoaded = true;
+        $fixtures = array_map(function($v) {
+            return new YamlFixtures($v);
+        }, $this->fixtureStack->unstack(FixtureStack::DEFAULT_KEY));
+
+        $fixtures[] = new InlineFixtures($className, $columnKey, $data);
+
+        $this->importFixtures($fixtures);
+    }
+
+    public function importFixtureKeyPath($key)
+    {
+        $fixtures = array_map(function($v) {
+            return new YamlFixtures($v);
+        }, $this->fixtureStack->unstack($key));
+
+        if (!empty($fixtures)) {
+            $this->importFixtures($fixtures);
         }
+    }
 
+    private function importFixtures(array $fixtures)
+    {
         $fixtures = new MultipleFixtures($fixtures);
         $configuration = new Configuration();
         $eventManager  = $configuration->getEventManager();
@@ -90,7 +103,7 @@ class AliceFixturesExecutor
 
     private function reset()
     {
-        $this->yamlLoaded = false;
+        $this->fixtureStack->reset();
     }
 
     private function guardAgainstEmptyAdapterConfig()
