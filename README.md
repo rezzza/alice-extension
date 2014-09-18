@@ -102,6 +102,7 @@ Currently we support :
 
 * DoctrineORM
 * ElasticSearch (through FOSElasticaBundle)
+* Guzzle
 
 ```yml
 default:
@@ -110,6 +111,7 @@ default:
             adapters:
                 elastica: ~
                 orm: ~
+                guzzle: ~
 
 ```
 

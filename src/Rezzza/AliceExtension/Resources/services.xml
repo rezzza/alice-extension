@@ -4,27 +4,27 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <parameter key="behat.alice.adapters"></parameter>
+        <parameter key="behat.alice.container_proxy.class">Rezzza\AliceExtension\Symfony\ContainerProxy</parameter>
+        <parameter key="behat.alice.elastica.persister.class">Rezzza\AliceExtension\Adapter\Elastica\Persister</parameter>
+        <parameter key="behat.alice.elastica_index"></parameter>
+        <parameter key="behat.alice.elastica_mapping" type="collection"></parameter>
+        <parameter key="behat.alice.elastica_subscriber.factory.class">Rezzza\AliceExtension\Adapter\Elastica\ElasticaSubscriberFactory</parameter>
+        <parameter key="behat.alice.executor.class">Rezzza\AliceExtension\Alice\AliceFixturesExecutor</parameter>
+        <parameter key="behat.alice.fixture_stack.class">Rezzza\AliceExtension\Fixture\FixtureStack</parameter>
         <parameter key="behat.alice.fixtures.default" type="collection"></parameter>
         <parameter key="behat.alice.fixtures.key_paths" type="collection"></parameter>
-        <parameter key="behat.alice.fixture_stack.class">Rezzza\AliceExtension\Fixture\FixtureStack</parameter>
-        <parameter key="behat.alice.lifetime">feature</parameter>
-        <parameter key="behat.alice.executor.class">Rezzza\AliceExtension\Alice\AliceFixturesExecutor</parameter>
+        <parameter key="behat.alice.guzzle_subscriber.factory.class">Rezzza\AliceExtension\Adapter\Guzzle\GuzzleSubscriberFactory</parameter>
         <parameter key="behat.alice.initializer.class">Rezzza\AliceExtension\Context\Initializer\AliceExecutorInitializer</parameter>
+        <parameter key="behat.alice.lifetime">feature</parameter>
         <parameter key="behat.alice.loader.class">Rezzza\AliceExtension\Alice\Loader</parameter>
-        <parameter key="behat.alice.hook_listener.class">Rezzza\AliceExtension\Context\EventSubscriber\HookListener</parameter>
-        <parameter key="sf2.alice_extension.processor.registry.class">Rezzza\AliceExtension\Alice\AggregateProcessorRegistry</parameter>
-        <parameter key="sf2.doctrine.orm.entity_manager.class">Doctrine\Common\Persistence\ObjectManager</parameter>
-        <parameter key="sf2.doctrine.class">Doctrine\Common\Persistence\ManagerRegistry</parameter>
-        <parameter key="behat.alice.container_proxy.class">Rezzza\AliceExtension\Symfony\ContainerProxy</parameter>
-        <parameter key="behat.alice.adapters"></parameter>
-        <parameter key="behat.alice.elastica_mapping" type="collection"></parameter>
-        <parameter key="behat.alice.elastica_index"></parameter>
-        <parameter key="behat.alice.orm_subscriber.factory.class">Rezzza\AliceExtension\Adapter\ORM\ORMSubscriberFactory</parameter>
-        <parameter key="behat.alice.subscriber_factory.registry.class">Rezzza\AliceExtension\Adapter\SubscriberFactoryRegistry</parameter>
-        <parameter key="behat.alice.elastica_subscriber.factory.class">Rezzza\AliceExtension\Adapter\Elastica\ElasticaSubscriberFactory</parameter>
-        <parameter key="behat.alice.elastica.persister.class">Rezzza\AliceExtension\Adapter\Elastica\Persister</parameter>
         <parameter key="behat.alice.orm.persister.class">Nelmio\Alice\ORM\Doctrine</parameter>
         <parameter key="behat.alice.orm.purger.class">Rezzza\AliceExtension\Doctrine\ORMPurger</parameter>
+        <parameter key="behat.alice.orm_subscriber.factory.class">Rezzza\AliceExtension\Adapter\ORM\ORMSubscriberFactory</parameter>
+        <parameter key="behat.alice.subscriber_factory.registry.class">Rezzza\AliceExtension\Adapter\SubscriberFactoryRegistry</parameter>
+        <parameter key="sf2.alice_extension.processor.registry.class">Rezzza\AliceExtension\Alice\AggregateProcessorRegistry</parameter>
+        <parameter key="sf2.doctrine.class">Doctrine\Common\Persistence\ManagerRegistry</parameter>
+        <parameter key="sf2.doctrine.orm.entity_manager.class">Doctrine\Common\Persistence\ObjectManager</parameter>
     </parameters>
 
     <services>
@@ -103,6 +103,12 @@
             <tag name="behat.alice.subscriber.factory" alias="elastica" />
         </service>
 
+        <service id="behat.alice.guzzle_subscriber.factory" class="%behat.alice.guzzle_subscriber.factory.class%">
+            <argument type="service" id="behat.alice.guzzle.endpoint" />
+            <tag name="behat.alice.subscriber.factory" alias="guzzle" />
+        </service>
+
+
         <service id="behat.alice.elastica.persister" class="%behat.alice.elastica.persister.class%">
             <argument type="service" id="sf2.elastica.index" />
             <argument>%behat.alice.elastica_mapping%</argument>
@@ -115,6 +121,12 @@
 
         <service id="behat.alice.orm.purger" class="%behat.alice.orm.purger.class%">
             <argument type="service" id="sf2.doctrine.orm.entity_manager" />
+        </service>
+
+        <service id="behat.alice.guzzle.endpoint" class="%behat.alice.guzzle.endpoint.class%">
+            <argument>%behat.alice.guzzle_endpoint%</argument>
+            <argument>%behat.alice.guzzle_path_purge%</argument>
+            <argument>%behat.alice.guzzle_path_load%</argument>
         </service>
     </services>
 </container>
