@@ -141,6 +141,7 @@ Fixtures can be managed through the configuration.
 default:
     extensions:
         Rezzza\AliceExtension\Extension:
+            default_loading: implicit
             fixtures:
                 default: [users, products] # could be scalar if you want only one => users
                 key_paths:
@@ -149,6 +150,7 @@ default:
 ```
 
 With this kind of configuration, when you'll call step below, it'll load **default** fixtures (**users** and **products** in this example).
+**default_loading** key is important here, if it's defined as `implicit`, it'll implicitly load **default** fixtures when you use step below. If it's defined as `explicit` you'll have to use `Given I load "default" fixtures` to load **default** fixtures.
 
 ```
 Given I load "Acme\Bundle\Entity\User" fixtures where column "key" is the key:
@@ -165,6 +167,7 @@ Given I load "products" fixtures  # will load products
 ```
 
 Of course, fixtures are loaded once.
+
 
 
 Faker Providers
