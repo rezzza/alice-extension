@@ -7,6 +7,7 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Rezzza\AliceExtension\Fixture\FixtureStack;
+use Rezzza\AliceExtension\Alice\AliceFixturesExecutor;
 
 use Behat\Testwork\ServiceContainer\ExtensionManager;
 use Behat\Testwork\ServiceContainer\Extension as ExtensionInterface;
@@ -36,6 +37,7 @@ class Extension implements ExtensionInterface
         if (isset($config['fixtures'])) {
             $container->setParameter('behat.alice.fixtures.default', $config['fixtures']['default']);
             $container->setParameter('behat.alice.fixtures.key_paths', $config['fixtures']['key_paths']);
+            $container->setParameter('behat.alice.fixtures.default_loading', $config['fixtures']['default_loading']);
         }
 
         if (isset($config['lifetime'])) {
@@ -92,6 +94,13 @@ class Extension implements ExtensionInterface
                         ->thenInvalid("You can't define a default which is not present in key_paths.")
                     ->end()
                     ->children()
+                        ->scalarNode('default_loading')
+                            ->defaultValue(AliceFixturesExecutor::DEFAULT_LOADING_IMPLICIT)
+                            ->validate()
+                                ->ifNotInArray(array(AliceFixturesExecutor::DEFAULT_LOADING_IMPLICIT, AliceFixturesExecutor::DEFAULT_LOADING_EXPLICIT))
+                                ->thenInvalid('fixtures.default_loading should be implicit or explicit.')
+                            ->end()
+                        ->end()
                         ->arrayNode('default')
                             ->beforeNormalization()
                                 ->ifTrue(function($v) {

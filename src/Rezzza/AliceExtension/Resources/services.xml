@@ -32,6 +32,7 @@
             <argument type="service" id="behat.alice.subscriber_factory.registry" />
             <argument type="service" id="behat.alice.loader" />
             <argument type="service" id="behat.alice.fixture_stack" />
+            <argument>%behat.alice.fixtures.default_loading%</argument>
         </service>
 
         <service id="behat.alice.fixture_stack" class="%behat.alice.fixture_stack.class%">
