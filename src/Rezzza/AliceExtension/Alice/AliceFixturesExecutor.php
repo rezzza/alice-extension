@@ -23,11 +23,17 @@ class AliceFixturesExecutor
 
     protected $adapterRegistry;
 
-    public function __construct(SubscriberFactoryRegistry $adapterRegistry, AliceLoader $alice, FixtureStack $fixtureStack)
+    protected $defaultLoading;
+
+    CONST DEFAULT_LOADING_IMPLICIT = 'implicit';
+    CONST DEFAULT_LOADING_EXPLICIT = 'explicit';
+
+    public function __construct(SubscriberFactoryRegistry $adapterRegistry, AliceLoader $alice, FixtureStack $fixtureStack, $defaultLoading = self::DEFAULT_LOADING_IMPLICIT)
     {
         $this->adapterRegistry = $adapterRegistry;
-        $this->alice = $alice;
-        $this->fixtureStack = $fixtureStack;
+        $this->alice           = $alice;
+        $this->fixtureStack    = $fixtureStack;
+        $this->defaultLoading  = $defaultLoading;
     }
 
     public function changeAdapter($name, $fixtureClass)
@@ -40,9 +46,12 @@ class AliceFixturesExecutor
     {
         $this->guardAgainstEmptyAdapterConfig();
 
-        $fixtures = array_map(function($v) {
-            return new YamlFixtures($v);
-        }, $this->fixtureStack->unstack(FixtureStack::DEFAULT_KEY));
+        if ($this->defaultLoading === self::DEFAULT_LOADING_IMPLICIT) {
+            // add defaults fixtures.
+            $fixtures = array_map(function($v) {
+                return new YamlFixtures($v);
+            }, $this->fixtureStack->unstack(FixtureStack::DEFAULT_KEY));
+        }
 
         $fixtures[] = new InlineFixtures($className, $columnKey, $data);
 
