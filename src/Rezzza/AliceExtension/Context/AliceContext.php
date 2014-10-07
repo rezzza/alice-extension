@@ -39,4 +39,12 @@ class AliceContext extends BehatContext implements AliceAwareInterface
             $table->getHash()
         );
     }
+
+    /**
+     * @Given /^I finished loading fixtures$/
+     */
+    public function finishLoadingFixtures()
+    {
+        $this->executor->terminate();
+    }
 }

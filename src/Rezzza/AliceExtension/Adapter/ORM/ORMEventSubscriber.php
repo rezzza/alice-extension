@@ -11,10 +11,12 @@ use Doctrine\Fixture\Persistence\ManagerRegistryEventSubscriber;
 use Nelmio\Alice\ORM\Doctrine as ORMPersister;
 
 use Rezzza\AliceExtension\Doctrine\ORMPurger;
+use Rezzza\AliceExtension\Alice\EventListener\TerminateFixtureEventListener;
 
 class ORMEventSubscriber extends ManagerRegistryEventSubscriber implements EventSubscriber,
                                                                            ImportFixtureEventListener,
-                                                                           PurgeFixtureEventListener
+                                                                           PurgeFixtureEventListener,
+                                                                           TerminateFixtureEventListener
 {
     private $persister;
 
@@ -35,6 +37,7 @@ class ORMEventSubscriber extends ManagerRegistryEventSubscriber implements Event
         return array(
             ImportFixtureEventListener::IMPORT,
             PurgeFixtureEventListener::PURGE,
+            TerminateFixtureEventListener::TERMINATE
         );
     }
 
@@ -64,6 +67,12 @@ class ORMEventSubscriber extends ManagerRegistryEventSubscriber implements Event
         }
 
         $fixture->setORMPurger($this->purger);
+    }
+
+    public function terminate(FixtureEvent $event)
+    {
+        // only to set the managerRegistry to ORMFixture... No other way for now
+        parent::import($event);
     }
 }
 
