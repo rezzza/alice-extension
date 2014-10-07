@@ -10,6 +10,9 @@ use Doctrine\Fixture\Loader\ClassLoader;
 use Rezzza\AliceExtension\Alice\Loader as AliceLoader;
 use Rezzza\AliceExtension\Adapter\SubscriberFactoryRegistry;
 use Rezzza\AliceExtension\Fixture\FixtureStack;
+use Rezzza\AliceExtension\Alice\EventListener\AliceLoadFixturesEventListener;
+use Rezzza\AliceExtension\Alice\Fixture\AliceFixtureEvent;
+use Rezzza\AliceExtension\Alice\Fixture\AliceExecutorEventSubscriber;
 
 class AliceFixturesExecutor
 {
@@ -45,60 +48,79 @@ class AliceFixturesExecutor
     public function import($className, $columnKey, array $data)
     {
         $this->guardAgainstEmptyAdapterConfig();
+        $fixtures = array();
 
         if ($this->defaultLoading === self::DEFAULT_LOADING_IMPLICIT) {
             // add defaults fixtures.
-            $fixtures = array_map(function($v) {
-                return new YamlFixtures($v);
-            }, $this->fixtureStack->unstack(FixtureStack::DEFAULT_KEY));
+            $fixtures = $this->createYamlFixtures(FixtureStack::DEFAULT_KEY);
         }
 
-        $fixtures[] = new InlineFixtures($className, $columnKey, $data);
+        $fixtures[] = $this->createInlineFixtures($className, $columnKey, $data);
 
-        $this->importFixtures($fixtures);
+        $this->importFixtures(new MultipleFixtures($fixtures));
     }
 
     public function importFixtureKeyPath($key)
     {
-        $fixtures = array_map(function($v) {
-            return new YamlFixtures($v);
-        }, $this->fixtureStack->unstack($key));
+        $fixtures = $this->createYamlFixtures($key);
 
         if (!empty($fixtures)) {
-            $this->importFixtures($fixtures);
+            $this->importFixtures(new MultipleFixtures($fixtures));
         }
-    }
-
-    private function importFixtures(array $fixtures)
-    {
-        $fixtures = new MultipleFixtures($fixtures);
-        $configuration = new Configuration();
-        $eventManager  = $configuration->getEventManager();
-        $eventSubscribers = array(
-            new Fixture\AliceFixturesEventSubscriber($this->alice, $fixtures),
-            $this->adapterRegistry->get($this->adapterName)->create()
-        );
-
-        foreach ($eventSubscribers as $eventSubscriber) {
-            $eventManager->addEventSubscriber($eventSubscriber);
-        }
-
-        $this->execute($configuration, Executor::IMPORT);
     }
 
     public function purge()
     {
         $this->guardAgainstEmptyAdapterConfig();
-        $configuration = new Configuration();
-        $eventManager  = $configuration->getEventManager();
 
-        $eventManager->addEventSubscriber(
+        $configuration = $this->createExecutorConfiguration(array(
+            $this->adapterRegistry->get($this->adapterName)->create()
+        ));
+
+        $this->resetFixtureStack();
+
+        $this->execute($configuration, Executor::PURGE);
+    }
+
+    public function terminate()
+    {
+        $eventSubscribers = array(
+            new AliceExecutorEventSubscriber,
             $this->adapterRegistry->get($this->adapterName)->create()
         );
 
-        $this->reset();
+        $configuration = $this->createExecutorConfiguration($eventSubscribers);
+        $eventManager  = $configuration->getEventManager();
 
-        $this->execute($configuration, Executor::PURGE);
+        $eventManager->dispatchEvent(
+            AliceLoadFixturesEventListener::BULK_TERMINATE,
+            new AliceFixtureEvent($configuration, array($this->fixtureClass))
+        );
+    }
+
+    private function importFixtures(MultipleFixtures $fixtures)
+    {
+        $eventSubscribers = array(
+            new Fixture\AliceFixturesEventSubscriber($this->alice, $fixtures),
+            $this->adapterRegistry->get($this->adapterName)->create()
+        );
+
+        $configuration = $this->createExecutorConfiguration($eventSubscribers);
+
+        $this->execute($configuration, Executor::IMPORT);
+    }
+
+    private function createYamlFixtures($key)
+    {
+        return array_map(
+            function ($v) { return new YamlFixtures($v); },
+            $this->fixtureStack->unstack($key)
+        );
+    }
+
+    private function createInlineFixtures($className, $columnKey, $data)
+    {
+        return new InlineFixtures($className, $columnKey, $data);
     }
 
     private function execute($configuration, $flag)
@@ -110,9 +132,21 @@ class AliceFixturesExecutor
         $executor->execute($classLoader, $filter, $flag);
     }
 
-    private function reset()
+    private function resetFixtureStack()
     {
         $this->fixtureStack->reset();
+    }
+
+    private function createExecutorConfiguration(array $eventSubscribers)
+    {
+        $configuration = new Configuration();
+        $eventManager  = $configuration->getEventManager();
+
+        foreach ($eventSubscribers as $eventSubscriber) {
+            $eventManager->addEventSubscriber($eventSubscriber);
+        }
+
+        return $configuration;
     }
 
     private function guardAgainstEmptyAdapterConfig()
