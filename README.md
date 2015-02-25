@@ -200,6 +200,8 @@ default:
                     - \Rezzza\AliceExtension\Providers\NullProvider
                     - \Rezzza\AliceExtension\Providers\FixedDateTimeProvider
                     - \Acme\Providers\YourOwnProvider
+                    - @your_service
+                    - \Your\Class(@service_id, "data")
 ```
 
 
