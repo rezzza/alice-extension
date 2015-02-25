@@ -47,6 +47,13 @@ class ORMFixture implements ManagerRegistryFixture, AliceFixture, ORMPersistFixt
         $em->getConnection()->close();
     }
 
+    public function terminate()
+    {
+        $em = $this->managerRegistry->getManager();
+        $em->clear();
+        $em->getConnection()->close();
+    }
+
     public function setManagerRegistry(ManagerRegistry $registry)
     {
         $this->managerRegistry = $registry;

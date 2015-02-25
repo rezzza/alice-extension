@@ -132,6 +132,44 @@ Feature: Test My feature
             | fixture2 | 2  | marc |
 ```
 
+Advanced Fixtures
+-----------------
+
+Fixtures can be managed through the configuration.
+
+```yml
+default:
+    extensions:
+        Rezzza\AliceExtension\Extension:
+            default_loading: implicit
+            fixtures:
+                default: [users, products] # could be scalar if you want only one => users
+                key_paths:
+                    users: /src/path/to/your/fixtures.yml
+                    products: /src/path/to/your/fixtures.yml
+```
+
+With this kind of configuration, when you'll call step below, it'll load **default** fixtures (**users** and **products** in this example).
+**default_loading** key is important here, if it's defined as `implicit`, it'll implicitly load **default** fixtures when you use step below. If it's defined as `explicit` you'll have to use `Given I load "default" fixtures` to load **default** fixtures.
+
+```
+Given I load "Acme\Bundle\Entity\User" fixtures where column "key" is the key:
+    | key                  | emailAddress     | password |
+    | user1 (extends user) | chuck@norris.com | password |
+```
+
+You are able to load fixtures manually:
+
+```
+Given I load "default" fixtures   # will load users AND products
+Given I load "users" fixtures     # will load users
+Given I load "products" fixtures  # will load products
+```
+
+Of course, fixtures are loaded once.
+
+
+
 Faker Providers
 ---------------
 
@@ -153,6 +191,8 @@ default:
                     - \Rezzza\AliceExtension\Providers\NullProvider
                     - \Rezzza\AliceExtension\Providers\FixedDateTimeProvider
                     - \Acme\Providers\YourOwnProvider
+                    - @your_service
+                    - \Your\Class(@service_id, "data")
 ```
 
 

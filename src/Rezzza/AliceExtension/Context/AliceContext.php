@@ -21,6 +21,14 @@ class AliceContext implements BehatContext, AliceAwareInterface
     }
 
     /**
+     * @Given /^I load "(?P<fixtureName>[^"]*)" fixtures$/
+     */
+    public function iLoadSpecificFixtureFile($fixtureName)
+    {
+        $this->executor->importFixtureKeyPath($fixtureName);
+    }
+
+    /**
      * @Given /^I load "(?P<className>[^"]*)" fixtures where column "(?P<columnKey>[^"]*)" is the key:$/
      */
     public function iLoadFixtures($className, $columnKey, TableNode $table)
@@ -30,5 +38,13 @@ class AliceContext implements BehatContext, AliceAwareInterface
             $columnKey,
             $table->getHash()
         );
+    }
+
+    /**
+     * @Given /^I finished loading fixtures$/
+     */
+    public function finishLoadingFixtures()
+    {
+        $this->executor->terminate();
     }
 }
