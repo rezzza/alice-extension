@@ -2,12 +2,14 @@
 
 namespace Rezzza\AliceExtension;
 
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Rezzza\AliceExtension\Fixture\FixtureStack;
 use Rezzza\AliceExtension\Alice\AliceFixturesExecutor;
+use Rezzza\AliceExtension\Fixture\FixtureStack;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 
 use Behat\Testwork\ServiceContainer\ExtensionManager;
 use Behat\Testwork\ServiceContainer\Extension as ExtensionInterface;
@@ -45,7 +47,7 @@ class Extension implements ExtensionInterface
         }
 
         $container->setParameter('behat.alice.faker.locale', $config['faker']['locale']);
-        $container->setParameter('behat.alice.faker.providers', $config['faker']['providers']);
+        $container->setParameter('behat.alice.faker.providers', $this->buildProviders($config['faker']['providers'], $container));
 
         $adapters = array();
         foreach ($config['adapters'] as $name => $adapter) {
@@ -60,6 +62,40 @@ class Extension implements ExtensionInterface
             }
         }
         $container->setParameter('behat.alice.adapters', $adapters);
+    }
+
+    private function buildProviders(array $providers = array(), $container)
+    {
+        $createReference = function($service) {
+            $definition = new Definition(null, array(substr($service, 1)));
+            $definition->setFactoryService('behat.alice.container_proxy');
+            $definition->setFactoryMethod('get');
+
+            return $definition;
+        };
+
+        $data = array();
+        foreach ($providers as $provider) {
+            if (strpos($provider, '@') === 0) {
+                $data[] = $createReference($provider);
+            } elseif (preg_match('/(?P<class>.+)\((?P<arguments>.+)\)$/', $provider, $matches)) {
+                $arguments = array_map('trim', explode(', ', $matches['arguments']));
+
+                foreach ($arguments as $k => $argument) {
+                    if (strpos($argument, '@') === 0) {
+                        $arguments[$k] = $createReference($argument);
+                    } else {
+                        $arguments[$k] = trim($argument, '"');
+                    }
+                }
+
+                $data[] = new Definition($matches['class'], $arguments);
+            } else {
+                $data[] = new $provider();
+            }
+        }
+
+        return $data;
     }
 
     /**
@@ -130,13 +166,6 @@ class Extension implements ExtensionInterface
                     ->children()
                         ->scalarNode('locale')->defaultValue('en_US')->end()
                         ->arrayNode('providers')
-                            ->beforeNormalization()
-                                ->always(function($v) {
-                                    return array_map(function($class) {
-                                        return new $class();
-                                    }, $v);
-                                })
-                            ->end()
                             ->prototype('variable')->end()
                         ->end()
                     ->end()
