@@ -2,10 +2,10 @@
 
 namespace Rezzza\AliceExtension\Alice\Tests\Units;
 
-use \atoum\AtoumBundle\Test\Units;
-use \Rezzza\AliceExtension\Alice\InlineFixtures as TestedClass;
+use mageekguy\atoum;
+use Rezzza\AliceExtension\Alice\InlineFixtures as TestedClass;
 
-class InlineFixtures extends Units\Test
+class InlineFixtures extends atoum\test
 {
 
     public function test_normalize_primitive_data()
