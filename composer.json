@@ -13,14 +13,13 @@
     "require": {
         "php":                      ">=5.3.2",
         "behat/behat":              "~3.0",
-        "behat/symfony2-extension": "dev-master",
+        "behat/symfony2-extension": "~2.0",
         "nelmio/alice":             "~1.7",
         "doctrine/data-fixtures":   "2.0.*@dev"
     },
 
     "require-dev": {
-        "atoum/atoum-bundle": "dev-master",
-        "atoum/atoum": "dev-master",
+        "atoum/atoum": "~1.0",
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "~1.2",
         "symfony/symfony": "~2.3"
