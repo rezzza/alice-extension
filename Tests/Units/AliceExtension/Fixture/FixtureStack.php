@@ -2,10 +2,10 @@
 
 namespace Rezzza\AliceExtension\Fixture\Tests\Units;
 
-use \atoum\AtoumBundle\Test\Units;
+use mageekguy\atoum;
 use Rezzza\AliceExtension\Fixture\FixtureStack as TestedClass;
 
-class FixtureStack extends Units\Test
+class FixtureStack extends atoum\test
 {
     public function test_without_cfg()
     {
