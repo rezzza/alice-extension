@@ -9,6 +9,7 @@ use Doctrine\Fixture\Event\ImportFixtureEventListener;
 use Doctrine\Fixture\Event\PurgeFixtureEventListener;
 use Doctrine\Fixture\Persistence\ManagerRegistryEventSubscriber;
 use Nelmio\Alice\ORM\Doctrine as ORMPersister;
+use Nelmio\Alice\ORMInterface;
 
 use Rezzza\AliceExtension\Doctrine\ORMPurger;
 use Rezzza\AliceExtension\Alice\EventListener\TerminateFixtureEventListener;
@@ -22,7 +23,7 @@ class ORMEventSubscriber extends ManagerRegistryEventSubscriber implements Event
 
     private $purger;
 
-    public function __construct(ManagerRegistry $doctrine, ORMPersister $persister, ORMPurger $purger)
+    public function __construct(ManagerRegistry $doctrine, ORMInterface $persister, ORMPurger $purger)
     {
         parent::__construct($doctrine);
         $this->persister = $persister;
