@@ -19,8 +19,7 @@
     },
 
     "require-dev": {
-        "atoum/atoum-bundle": "dev-master",
-        "atoum/atoum": "dev-master"
+        "atoum/atoum": "~2.3"
     },
 
     "suggest": {

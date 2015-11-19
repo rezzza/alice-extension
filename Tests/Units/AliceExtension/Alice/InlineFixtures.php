@@ -2,12 +2,11 @@
 
 namespace Rezzza\AliceExtension\Alice\Tests\Units;
 
-use \atoum\AtoumBundle\Test\Units;
+use mageekguy\atoum;
 use \Rezzza\AliceExtension\Alice\InlineFixtures as TestedClass;
 
-class InlineFixtures extends Units\Test
+class InlineFixtures extends atoum\test
 {
-
     public function test_normalize_primitive_data()
     {
         $this->given(
@@ -108,5 +107,4 @@ class InlineFixtures extends Units\Test
             ->message
             ->contains('Unexpected characters');
     }
-
 }
