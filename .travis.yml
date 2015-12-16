@@ -1,24 +1,25 @@
 language: php
 
+dist: trusty
+sudo: required
+
 php:
-    - 5.3
     - 5.4
     - 5.5
     - 5.6
-    - hhvm
+    - 7.0
 
-matrix:
-    allow_failures:
-        - php: hhvm
-
-before_script:
-    - composer self-update || true
-    - composer install --dev --prefer-dist
+install:
+    - git clone --branch trusty --depth=1 https://github.com/rezzza/travis-ci.git ~/.rezzza.travis-ci
+    - ~/.rezzza.travis-ci/php/bootstrap.sh apcu
+    - phpenv rehash
+    - ~/.rezzza.travis-ci/mariadb/bootstrap.sh
+    - composer install --optimize-autoloader --prefer-dist --no-scripts
     - mkdir -p web/code-coverage
     - cp app/config/parameters.yml.dist app/config/parameters.yml
     - app/console doctrine:database:create -e test
     - app/console doctrine:schema:create --env=test
 
 script:
-    - bin/atoum
+    - bin/atoum -ulr
     - bin/behat
