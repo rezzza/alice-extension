@@ -23,7 +23,7 @@
         <parameter key="behat.alice.subscriber_factory.registry.class">Rezzza\AliceExtension\Adapter\SubscriberFactoryRegistry</parameter>
         <parameter key="behat.alice.elastica_subscriber.factory.class">Rezzza\AliceExtension\Adapter\Elastica\ElasticaSubscriberFactory</parameter>
         <parameter key="behat.alice.elastica.persister.class">Rezzza\AliceExtension\Adapter\Elastica\Persister</parameter>
-        <parameter key="behat.alice.orm.persister.class">Nelmio\Alice\ORM\Doctrine</parameter>
+        <parameter key="behat.alice.orm.persister.class">Rezzza\AliceExtension\Doctrine\ORMPersister</parameter>
         <parameter key="behat.alice.orm.purger.class">Rezzza\AliceExtension\Doctrine\ORMPurger</parameter>
     </parameters>
 
@@ -59,10 +59,6 @@
 
         <service id="sf2.alice_extension.processor.registry" class="%sf2.alice_extension.processor.registry.class%" factory-service="behat.alice.container_proxy" factory-method="get">
             <argument>alice_extension.processor.registry</argument>
-        </service>
-
-        <service id="sf2.doctrine.orm.entity_manager" class="%sf2.doctrine.orm.entity_manager.class%" factory-service="behat.alice.container_proxy" factory-method="get">
-            <argument>doctrine.orm.default_entity_manager</argument>
         </service>
 
         <service id="sf2.doctrine" class="%sf2.doctrine.class%" factory-service="behat.alice.container_proxy" factory-method="get">
@@ -110,11 +106,11 @@
         </service>
 
         <service id="behat.alice.orm.persister" class="%behat.alice.orm.persister.class%">
-            <argument type="service" id="sf2.doctrine.orm.entity_manager" />
+            <argument type="service" id="sf2.doctrine" />
         </service>
 
         <service id="behat.alice.orm.purger" class="%behat.alice.orm.purger.class%">
-            <argument type="service" id="sf2.doctrine.orm.entity_manager" />
+            <argument type="service" id="sf2.doctrine" />
         </service>
     </services>
 </container>

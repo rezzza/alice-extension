@@ -19,10 +19,10 @@
 
 namespace Rezzza\AliceExtension\Doctrine;
 
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Internal\CommitOrderCalculator;
-use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
  * Class responsible for purging databases of data before reloading data fixtures.
@@ -35,8 +35,8 @@ class ORMPurger
     const PURGE_MODE_DELETE = 1;
     const PURGE_MODE_TRUNCATE = 2;
 
-    /** EntityManager instance used for persistence. */
-    private $em;
+    /** ManagerRegistry instance used for persistence. */
+    private $registry;
 
     /**
      * If the purge should be done through DELETE or TRUNCATE statements
@@ -50,9 +50,9 @@ class ORMPurger
      *
      * @param EntityManager $em EntityManager instance used for persistence.
      */
-    public function __construct(EntityManager $em = null)
+    public function __construct(ManagerRegistry $registry)
     {
-        $this->em = $em;
+        $this->registry = $registry;
     }
 
     /**
@@ -76,38 +76,21 @@ class ORMPurger
         return $this->purgeMode;
     }
 
-    /**
-     * Set the EntityManager instance this purger instance should use.
-     *
-     * @param EntityManager $em
-     */
-    public function setEntityManager(EntityManager $em)
-    {
-      $this->em = $em;
-    }
-
-    /**
-     * Retrieve the EntityManager instance this purger instance is using.
-     *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getObjectManager()
-    {
-        return $this->em;
-    }
-
     /** @inheritDoc */
     public function purge()
     {
-        $metadatas = $this->em->getMetadataFactory()->getAllMetadata();
-        $platform  = $this->em->getConnection()->getDatabasePlatform();
+        foreach ($this->registry->getManagers() as $manager) {
+            $this->purgeManager($manager);
+        }
+    }
+
+    private function purgeManager(EntityManager $entityManager)
+    {
+        $metadatas = $entityManager->getMetadataFactory()->getAllMetadata();
+        $platform  = $entityManager->getConnection()->getDatabasePlatform();
 
         $tables = array();
         foreach ($metadatas as $metadata) {
-            if (true === $metadata->isEmbeddedClass) {
-                continue;
-            }
-
             if (!$metadata->isMappedSuperclass) {
                 $tables[] = $metadata->getQuotedTableName($platform);
             }
@@ -121,20 +104,20 @@ class ORMPurger
 
         // implements hack for Mysql
         if ($platform instanceof MySqlPlatform) {
-            $this->em->getConnection()->exec('SET foreign_key_checks = 0;');
+            $entityManager->getConnection()->exec('SET foreign_key_checks = 0;');
         }
 
         foreach ($tables as $tbl) {
             if ($this->purgeMode === self::PURGE_MODE_DELETE) {
-                $this->em->getConnection()->executeUpdate("DELETE IGNORE FROM " . $tbl);
+                $entityManager->getConnection()->executeUpdate("DELETE IGNORE FROM " . $tbl);
             } else {
-                $this->em->getConnection()->executeUpdate($platform->getTruncateTableSQL($tbl, true));
+                $entityManager->getConnection()->executeUpdate($platform->getTruncateTableSQL($tbl, true));
             }
         }
 
         // implements hack for Mysql
         if ($platform instanceof MySqlPlatform) {
-            $this->em->getConnection()->exec('SET foreign_key_checks = 1;');
+            $entityManager->getConnection()->exec('SET foreign_key_checks = 1;');
         }
     }
 }

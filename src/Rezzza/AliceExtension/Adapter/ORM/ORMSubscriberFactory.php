@@ -3,7 +3,6 @@
 namespace Rezzza\AliceExtension\Adapter\ORM;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\Fixture\Persistence\ManagerRegistryEventSubscriber;
 use Nelmio\Alice\ORM\Doctrine as ORMPersister;
 use Rezzza\AliceExtension\Doctrine\ORMPurger;
 
