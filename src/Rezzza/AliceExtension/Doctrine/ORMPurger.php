@@ -21,6 +21,7 @@ namespace Rezzza\AliceExtension\Doctrine;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Internal\CommitOrderCalculator;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -108,6 +109,14 @@ class ORMPurger
                 $entityManager->getConnection()->executeUpdate("DELETE IGNORE FROM " . $tbl);
             } else {
                 $entityManager->getConnection()->executeUpdate($platform->getTruncateTableSQL($tbl, true));
+            }
+        }
+
+        if ($platform instanceof PostgreSqlPlatform) {
+            $sequences = $entityManager->getConnection()->fetchAll("SELECT relname FROM pg_class WHERE relkind='S'");
+
+            foreach ($sequences as $sequence) {
+                $entityManager->getConnection()->exec(sprintf('ALTER SEQUENCE %s RESTART WITH 1', $sequence['relname']));
             }
         }
 
