@@ -4,10 +4,15 @@ namespace Rezzza\AliceExtension\Alice;
 
 class AggregateProcessorRegistry implements ProcessorRegistry
 {
+    /** @var ProcessorRegistry[] */
     private $registries = array();
 
+    /** @var \Nelmio\Alice\ProcessorInterface[] */
     private $processors = array();
 
+    /**
+     * @param ProcessorRegistry[] $registries
+     */
     public function __construct(array $registries = array())
     {
         foreach ($registries as $registry) {
@@ -15,6 +20,9 @@ class AggregateProcessorRegistry implements ProcessorRegistry
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function get($className)
     {
         if (!$this->has($className)) {
@@ -31,6 +39,9 @@ class AggregateProcessorRegistry implements ProcessorRegistry
         return $this->processors[$className];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function has($className)
     {
         return isset($this->processors[$className]);

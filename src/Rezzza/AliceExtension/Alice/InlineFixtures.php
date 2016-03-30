@@ -19,6 +19,9 @@ class InlineFixtures implements AliceFixtures
         $this->data = $data;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function load()
     {
         $rows = array();

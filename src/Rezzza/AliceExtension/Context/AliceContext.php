@@ -3,16 +3,14 @@
 namespace Rezzza\AliceExtension\Context;
 
 use Behat\Behat\Context\Context as BehatContext;
-use Behat\Behat\Event\ScenarioEvent;
-use Behat\Behat\Event\FeatureEvent;
 use Behat\Gherkin\Node\TableNode;
 
 use Rezzza\AliceExtension\Alice\AliceAwareInterface;
 use Rezzza\AliceExtension\Alice\AliceFixturesExecutor;
-use Rezzza\AliceExtension\Doctrine\ORMInitializer;
 
 class AliceContext implements BehatContext, AliceAwareInterface
 {
+    /** @var AliceFixturesExecutor */
     private $executor;
 
     public function setExecutor(AliceFixturesExecutor $executor)

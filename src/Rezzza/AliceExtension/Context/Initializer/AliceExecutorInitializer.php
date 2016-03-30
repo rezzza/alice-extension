@@ -20,7 +20,7 @@ class AliceExecutorInitializer implements ContextInitializer
     /**
      * Checks if initializer supports provided context.
      *
-     * @param ContextInterface $context
+     * @param Context $context
      *
      * @return Boolean
      */
