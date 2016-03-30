@@ -3,7 +3,7 @@
 namespace Rezzza\AliceExtension\Adapter\ORM;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Nelmio\Alice\ORM\Doctrine as ORMPersister;
+use Nelmio\Alice\Persister\Doctrine as ORMPersister;
 use Rezzza\AliceExtension\Doctrine\ORMPurger;
 
 class ORMSubscriberFactory
