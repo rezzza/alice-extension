@@ -10,6 +10,7 @@ php:
     - 7.0
 
 install:
+    - composer self-update
     - git clone --branch trusty --depth=1 https://github.com/rezzza/travis-ci.git ~/.rezzza.travis-ci
     - ~/.rezzza.travis-ci/php/bootstrap.sh apcu
     - phpenv rehash
