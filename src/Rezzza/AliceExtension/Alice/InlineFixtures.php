@@ -40,10 +40,25 @@ class InlineFixtures implements AliceFixtures
         $result = array();
 
         foreach ($data as $key => $value) {
+            $value = $this->cleanFixtureReferenceToBeYamlCompliant($value);
+
             // Always parse with Yaml to support array, true, false and null values
             $result[$key] = YamlParser::parse($value);
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    private function cleanFixtureReferenceToBeYamlCompliant($value)
+    {
+        if (0 == preg_match("#^@(.*)$#i", $value)) {
+            return $value;
+        }
+
+        return sprintf('"%s"', $value);
     }
 }
