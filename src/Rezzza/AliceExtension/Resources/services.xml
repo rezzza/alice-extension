@@ -59,23 +59,28 @@
             <tag name="event_dispatcher.subscriber" priority="0" />
         </service>
 
-        <service id="sf2.alice_extension.processor.registry" class="%sf2.alice_extension.processor.registry.class%" factory-service="behat.alice.container_proxy" factory-method="get">
+        <service id="sf2.alice_extension.processor.registry" class="%sf2.alice_extension.processor.registry.class%" >
+            <factory service="behat.alice.container_proxy" method="get" />
             <argument>alice_extension.processor.registry</argument>
         </service>
 
-        <service id="sf2.doctrine" class="%sf2.doctrine.class%" factory-service="behat.alice.container_proxy" factory-method="get">
+        <service id="sf2.doctrine" class="%sf2.doctrine.class%" >
+            <factory service="behat.alice.container_proxy" method="get" />
             <argument>doctrine</argument>
         </service>
 
-        <service id="sf2.elastica.resetter" class="FOS\ElasticaBundle\Index\Resetter" factory-service="behat.alice.container_proxy" factory-method="get">
+        <service id="sf2.elastica.resetter" class="FOS\ElasticaBundle\Index\Resetter" >
+            <factory service="behat.alice.container_proxy" method="get" />
             <argument>fos_elastica.resetter</argument>
         </service>
 
-        <service id="sf2.serializer" class="JMS\Serializer\Serializer" factory-service="behat.alice.container_proxy" factory-method="get">
+        <service id="sf2.serializer" class="JMS\Serializer\Serializer" >
+            <factory service="behat.alice.container_proxy" method="get" />
             <argument>fos_elastica.serializer</argument>
         </service>
 
-        <service id="sf2.elastica.index" class="FOS\ElasticaBundle\Elastica\Index" factory-service="behat.alice.container_proxy" factory-method="get">
+        <service id="sf2.elastica.index" class="FOS\ElasticaBundle\Elastica\Index" >
+            <factory service="behat.alice.container_proxy" method="get" />
             <argument>%behat.alice.elastica_index%</argument>
         </service>
 
