@@ -2,8 +2,7 @@
 
 namespace Rezzza\AliceExtension\Compiler;
 
-use Symfony\Component\DependencyInjection\Reference,
-    Symfony\Component\DependencyInjection\ContainerBuilder,
+use Symfony\Component\DependencyInjection\ContainerBuilder,
     Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
 class SubscriberFactoryPass implements CompilerPassInterface

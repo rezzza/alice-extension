@@ -2,14 +2,15 @@
 
 namespace Rezzza\AliceExtension\Alice;
 
-use Doctrine\Common\Persistence\ObjectManager;
-use Nelmio\Alice\Loader\Base;
-use Nelmio\Alice\ORMInterface;
+use Nelmio\Alice\Fixtures\Loader as BaseLoader;
+use Nelmio\Alice\PersisterInterface;
 
-class Loader extends Base
+class Loader extends BaseLoader
 {
+    /** @var ProcessorRegistry */
     private $processorRegistry;
 
+    /** @var PersisterInterface */
     private $persister;
 
     public function __construct(ProcessorRegistry $processorRegistry, $locale = "en_US", array $providers = array())
@@ -18,7 +19,7 @@ class Loader extends Base
         $this->processorRegistry = $processorRegistry;
     }
 
-    public function changePersister($persister)
+    public function setPersister(PersisterInterface $persister)
     {
         $this->persister = $persister;
 

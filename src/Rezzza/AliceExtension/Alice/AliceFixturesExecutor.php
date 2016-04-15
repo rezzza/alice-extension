@@ -101,7 +101,7 @@ class AliceFixturesExecutor
         $this->execute($configuration, Executor::PURGE);
     }
 
-    private function execute($configuration, $flag)
+    private function execute(Configuration $configuration, $flag)
     {
         $executor      = new Executor($configuration);
         $classLoader   = new ClassLoader(array($this->fixtureClass));

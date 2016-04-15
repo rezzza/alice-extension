@@ -2,7 +2,7 @@
 
 namespace Rezzza\AliceExtension\Adapter\ORM;
 
-use Nelmio\Alice\ORM\Doctrine as ORMPersister;
+use Nelmio\Alice\Persister\Doctrine as ORMPersister;
 
 interface ORMPersistFixture
 {

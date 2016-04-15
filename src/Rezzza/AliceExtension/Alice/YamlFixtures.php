@@ -13,6 +13,9 @@ class YamlFixtures implements AliceFixtures
         $this->file = $file;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function load()
     {
         return $this->loadYaml($this->file);

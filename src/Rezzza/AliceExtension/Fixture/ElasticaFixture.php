@@ -4,7 +4,7 @@ namespace Rezzza\AliceExtension\Fixture;
 
 use Doctrine\Fixture\Fixture;
 use FOS\ElasticaBundle\Index\Resetter;
-use Nelmio\Alice\Loader\Base as AliceLoader;
+use Nelmio\Alice\Fixtures\Loader;
 
 use Rezzza\AliceExtension\Alice\AliceFixture;
 use Rezzza\AliceExtension\Alice\AliceFixtures;
@@ -48,7 +48,7 @@ class ElasticaFixture implements ElasticaPersistFixture, ElasticaResetFixture, A
         $this->fixtures = $fixtures;
     }
 
-    public function setAlice(AliceLoader $alice)
+    public function setAlice(Loader $alice)
     {
         $this->alice = $alice;
     }

@@ -4,33 +4,36 @@ namespace Rezzza\AliceExtension\Fixture;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Fixture\Persistence\ManagerRegistryFixture;
-use Nelmio\Alice\Loader\Base as AliceLoader;
-use Nelmio\Alice\ORM\Doctrine as ORMPersister;
+use Nelmio\Alice\Persister\Doctrine as ORMPersister;
 
 use Rezzza\AliceExtension\Alice\AliceFixture;
 use Rezzza\AliceExtension\Alice\AliceFixtures;
+use Rezzza\AliceExtension\Alice\Loader;
 use Rezzza\AliceExtension\Doctrine\ORMPurger;
 use Rezzza\AliceExtension\Adapter\ORM\ORMPersistFixture;
 use Rezzza\AliceExtension\Adapter\ORM\ORMResetFixture;
 
 class ORMFixture implements ManagerRegistryFixture, AliceFixture, ORMPersistFixture, ORMResetFixture
 {
+    /** @var ManagerRegistry */
     private $managerRegistry;
 
+    /** @var ORMPersister */
     private $persister;
 
+    /** @var ORMPurger */
     private $purger;
 
+    /** @var AliceFixtures */
     private $fixtures;
 
+    /** @var Loader */
     private $alice;
 
     public function import()
     {
-        $this->alice
-            ->changePersister($this->persister)
-            ->load($this->fixtures->load())
-        ;
+        $this->alice->setPersister($this->persister);
+        $this->alice->load($this->fixtures->load());
 
         // Ensure to close the connection to avoid mysql timeout
         $this->managerRegistry->getManager()->getConnection()->close();
@@ -67,7 +70,7 @@ class ORMFixture implements ManagerRegistryFixture, AliceFixture, ORMPersistFixt
         $this->fixtures = $fixtures;
     }
 
-    public function setAlice(AliceLoader $alice)
+    public function setAlice(Loader $alice)
     {
         $this->alice = $alice;
     }

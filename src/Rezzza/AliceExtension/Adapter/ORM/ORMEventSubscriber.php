@@ -8,7 +8,7 @@ use Doctrine\Fixture\Event\FixtureEvent;
 use Doctrine\Fixture\Event\ImportFixtureEventListener;
 use Doctrine\Fixture\Event\PurgeFixtureEventListener;
 use Doctrine\Fixture\Persistence\ManagerRegistryEventSubscriber;
-use Nelmio\Alice\ORM\Doctrine as ORMPersister;
+use Nelmio\Alice\Persister\Doctrine as ORMPersister;
 
 use Rezzza\AliceExtension\Doctrine\ORMPurger;
 

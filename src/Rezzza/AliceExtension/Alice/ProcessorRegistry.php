@@ -2,11 +2,17 @@
 
 namespace Rezzza\AliceExtension\Alice;
 
-use Nelmio\Alice\ProcessorInterface;
-
 interface ProcessorRegistry
 {
+    /**
+     * @param string $className
+     * @return \Nelmio\Alice\ProcessorInterface[]
+     */
     public function get($className);
 
+    /**
+     * @param string $className
+     * @return bool
+     */
     public function has($className);
 }

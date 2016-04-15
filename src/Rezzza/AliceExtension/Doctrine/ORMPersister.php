@@ -3,7 +3,7 @@
 namespace Rezzza\AliceExtension\Doctrine;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Nelmio\Alice\ORM\Doctrine;
+use Nelmio\Alice\Persister\Doctrine;
 
 class ORMPersister extends Doctrine
 {

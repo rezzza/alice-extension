@@ -4,6 +4,7 @@ namespace Rezzza\AliceExtension\Alice;
 
 class MultipleFixtures implements AliceFixtures
 {
+    /** @var AliceFixtures[] */
     private $fixtureRows;
 
     public function __construct(array $fixtureRows)
@@ -11,6 +12,9 @@ class MultipleFixtures implements AliceFixtures
         $this->fixtureRows = $fixtureRows;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function load()
     {
         $results = array();

@@ -39,7 +39,7 @@ class HookListener implements EventSubscriberInterface
     /**
      * Listens to "feature.before" event.
      *
-     * @param \Behat\Behat\Event\FeatureEvent $event
+     * @param BeforeFeatureTested $event
      */
     public function beforeFeature(BeforeFeatureTested $event)
     {
@@ -56,7 +56,7 @@ class HookListener implements EventSubscriberInterface
     /**
      * Listens to "scenario.before" event.
      *
-     * @param \Behat\Behat\Event\ScenarioEvent $event
+     * @param BeforeScenarioTested $event
      */
     public function beforeScenario(BeforeScenarioTested $event)
     {

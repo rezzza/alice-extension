@@ -69,4 +69,14 @@ class ContainerProxy implements ContainerInterface
     {
         throw new \Exception('Unsupported method');
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function initialized($id)
+    {
+        throw new \Exception('Unsupported method');
+    }
+
+
 }
