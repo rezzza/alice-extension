@@ -92,6 +92,10 @@ class ORMPurger
 
         $tables = array();
         foreach ($metadatas as $metadata) {
+            if (true === $metadata->isEmbeddedClass) {
+                continue;
+            }
+
             if (!$metadata->isMappedSuperclass) {
                 $tables[] = $metadata->getQuotedTableName($platform);
             }
