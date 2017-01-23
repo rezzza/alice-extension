@@ -112,11 +112,16 @@ class ORMPurger
             $entityManager->getConnection()->exec('SET foreign_key_checks = 0;');
         }
 
-        foreach ($tables as $tbl) {
-            if ($this->purgeMode === self::PURGE_MODE_DELETE) {
-                $entityManager->getConnection()->executeUpdate("DELETE IGNORE FROM " . $tbl);
-            } else {
-                $entityManager->getConnection()->executeUpdate($platform->getTruncateTableSQL($tbl, true));
+        //speed-up db purge
+        if ($platform instanceof PostgreSqlPlatform && $this->purgeMode === self::PURGE_MODE_TRUNCATE) {
+            $entityManager->getConnection()->executeUpdate(sprintf('TRUNCATE %s CASCADE;', implode(',',$tables)));
+        } else {
+            foreach ($tables as $tbl) {
+                if ($this->purgeMode === self::PURGE_MODE_DELETE) {
+                    $entityManager->getConnection()->executeUpdate("DELETE IGNORE FROM " . $tbl);
+                } else {
+                    $entityManager->getConnection()->executeUpdate($platform->getTruncateTableSQL($tbl, true));
+                }
             }
         }
 
