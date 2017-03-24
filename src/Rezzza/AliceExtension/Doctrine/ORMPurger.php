@@ -115,6 +115,7 @@ class ORMPurger
         foreach ($tables as $tbl) {
             if ($this->purgeMode === self::PURGE_MODE_DELETE) {
                 $entityManager->getConnection()->executeUpdate("DELETE IGNORE FROM " . $tbl);
+                $entityManager->getConnection()->executeUpdate("ALTER TABLE $tbl AUTO_INCREMENT = 1");
             } else {
                 $entityManager->getConnection()->executeUpdate($platform->getTruncateTableSQL($tbl, true));
             }
