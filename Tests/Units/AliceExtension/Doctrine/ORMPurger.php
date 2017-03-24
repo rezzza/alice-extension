@@ -7,7 +7,7 @@ use Rezzza\AliceExtension\Doctrine\ORMPurger as TestedClass;
 
 class ORMPurger extends atoum\test
 {
-    public function it_should_not_truncate_an_embedded_entity()
+    public function it_should_not_truncate_an_embedded_entity_on_purge()
     {
         $this->given(
             $metadataMock1 = $this->mockClassMetadataInfo(false, 'realTable'),
@@ -28,6 +28,35 @@ class ORMPurger extends atoum\test
                 ->mock($doctrineConnectionMock)
                     ->call('executeUpdate')
                         ->once()
+        )
+        ;
+    }
+
+    public function it_should_delete_and_reset_auto_increment_on_purge()
+    {
+        $this->given(
+            $metadataMock = $this->mockClassMetadataInfo(false, 'realTable'),
+
+            $doctrineConnectionMock = $this->mockDoctrineConnection(),
+
+            $classMetadataFactoryMock = $this->mockClassMetadataFactory(array($metadataMock)),
+
+            $managerMock = $this->mockEntityManager($classMetadataFactoryMock, $doctrineConnectionMock),
+            $managerRegistryMock = $this->mockManagerRegistry($managerMock),
+
+            $testedClass = new TestedClass($managerRegistryMock),
+            $testedClass->setPurgeMode(1)
+        )->when(
+            $testedClass->purge()
+        )->then(
+            $this
+                ->mock($doctrineConnectionMock)
+                    ->call('executeUpdate')
+                        ->withArguments("DELETE IGNORE FROM realTable")
+                            ->once()
+                    ->call('executeUpdate')
+                        ->withArguments("ALTER TABLE realTable AUTO_INCREMENT = 1")
+                            ->once()
         )
         ;
     }
