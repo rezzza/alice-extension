@@ -113,7 +113,7 @@ class ORMPurger
         }
 
         //speed-up db purge
-        if ($platform instanceof PostgreSqlPlatform && $this->purgeMode === self::PURGE_MODE_TRUNCATE) {
+        if ($platform instanceof PostgreSqlPlatform && $this->purgeMode === self::PURGE_MODE_TRUNCATE && count($tables)) {
             $entityManager->getConnection()->executeUpdate(sprintf('TRUNCATE %s CASCADE;', implode(',',$tables)));
         } else {
             foreach ($tables as $tbl) {
