@@ -93,7 +93,7 @@
             <argument type="collection" />
         </service>
 
-        <service id="behat.alice.orm_subscriber.factory" class="%behat.alice.orm_subscriber.factory.class%">
+        <service id="behat.alice.orm_subscriber.factory" class="%behat.alice.orm_subscriber.factory.class%" public="true">
             <argument type="service" id="sf2.doctrine" />
             <argument type="service" id="behat.alice.orm.persister" />
             <argument type="service" id="behat.alice.orm.purger" />
