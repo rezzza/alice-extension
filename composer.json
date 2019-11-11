@@ -15,7 +15,7 @@
         "behat/behat":              "~3.0",
         "behat/symfony2-extension": "~2.0",
         "nelmio/alice":             "~2.1",
-        "doctrine/data-fixtures":   "2.0.*@dev"
+        "doctrine/data-fixtures":   "2.0.*@dev || ^1.2"
     },
 
     "require-dev": {
